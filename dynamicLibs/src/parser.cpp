@@ -60,7 +60,6 @@ void commandRecognizer(std::vector<std::string> words){
     */
 
     // к сожалению только лесенкой условий(
-    std::cout << words.size() << "\n";
     if (words[0] == "la")
         if (words.size() == 3)
             signInAdmin(words[1], words[2]);
@@ -77,7 +76,7 @@ void commandRecognizer(std::vector<std::string> words){
             else
                 std::cout << "Wrong data set!\n";
     else if (words[0] == "me")
-        if (words.size() == 2)
+        if (words.size() == 2 && words[1] != "")
                 sendMessage(words[1]);
             else
                 std::cout << "No message found!\n";
@@ -88,8 +87,11 @@ void commandRecognizer(std::vector<std::string> words){
 
 
 int main(){
+    // цикл while ТОЛЬКО НА ТЕСТ!
+    // перед добавлением на сервер УБРАТЬ!!!!
     std::string cmd = "";
     while (true){
+        std::cout << "Введите команду:\n";
         std::getline(std::cin, cmd);
         parser(cmd);
     }
