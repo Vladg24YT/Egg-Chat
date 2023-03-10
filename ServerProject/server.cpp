@@ -31,44 +31,44 @@ void Server::slotRead() {
 
         std::vector<std::string> words;
         std::string tmp = "";
-        short i = 0;
 
-            for (int i = 0; i < array.size(); i++) {
-                if (array[i] == ' ') {
-                    words.push_back(tmp);
-                    tmp = "";
-                }
-                else
-                    tmp += array[i];
-            }
-            if (tmp != "")
+        for (int i = 0; i < array.size(); i++) {
+            if (array[i] == ' ') {
                 words.push_back(tmp);
+                tmp = "";
+            }
+            else
+                tmp += array[i];
+        }
+        if (tmp != "")
+            words.push_back(tmp);
 
-            if (words[0] == "/reg")
-                if (words.size() != 3)
-                    TcpSocket->write("Wrong input data!\n");
-                else
-                    TcpSocket->write("Registration user ");
-            else if (words[0] == "/login")
-                if (words.size() != 4)
-                    TcpSocket->write("Wrong input data!\n");
-                else if (words[1] == "a")
-                    TcpSocket->write("Authorization admin with \n");
-                else if (words[1] == "u")
-                    TcpSocket->write("Authorization user with \n");
-                else TcpSocket->write("Not such login option!\n");
-            else if (words[0] == "/message")
-                if (words.size() < 2)
-                    TcpSocket->write("No message!\n");
-                else {
-                    TcpSocket->write("Message!\n");
-                };
+        if (words[0] == "/reg")
+            if (words.size() != 3)
+                TcpSocket->write("Wrong input data!\n");
+            else
+                TcpSocket->write("Registration user ");
+        else if (words[0] == "/login")
+            if (words.size() != 4)
+                TcpSocket->write("Wrong input data!\n");
+            else if (words[1] == "a")
+                TcpSocket->write("Authorization admin with \n");
+            else if (words[1] == "u")
+                TcpSocket->write("Authorization user with \n");
+            else TcpSocket->write("Not such login option!\n");
+        else if (words[0] == "/message"){
+            if (words.size() < 2)
+                TcpSocket->write("No message!\n");
+            else {
+                TcpSocket->write("Message!\n");
+            }
+        };
 
         TcpSocket->write(array);
     }
 }
 void Server::slotCloseClientConnection() {
-     TcpSocket->close();
+    TcpSocket->close();
 }
 
 Server::~Server() {
