@@ -94,17 +94,17 @@ void commandRecognizer(std::vector<std::string> words){
         if (words.size() == 2 && words[1] != "")
             newChat(words[1]);
         else
-            std::cout << "No chat's name!\n";
+            std::cout << "No chat name provided!\n";
     else if (words[0] == "rc")
         if (words.size() == 2 && words[1] != "")
             removeChat(words[1]);
         else
-            std::cout << "No chatID!\n";
+            std::cout << "No chatID provided!\n";
     else if (words[0] == "lc")
         if (words.size() == 2 && words[1] != "")
             leaveChat(words[1]);
         else
-            std::cout << "No chatID!\n";
+            std::cout << "No chatID provided!\n";
     else if (words[0] == "iu")
         if (words.size() == 3 && words[1] != "" && words[2] != "")
             inviteUserToChat(words[1], words[2]);
@@ -129,7 +129,7 @@ void commandRecognizer(std::vector<std::string> words){
         if (words.size() == 2 && words[1] != "")
             unbanUser(words[1]);
         else
-            std::cout << "No userID!\n";
+            std::cout << "No userID provided!\n";
     else
         std::cout << "No such command!\n";
     return;
