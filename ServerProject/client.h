@@ -4,13 +4,14 @@
 #include <QObject>
 #include <QTcpSocket>
 
+
 class Client : public QObject
 {
     Q_OBJECT
 public:
     explicit Client(QObject *parent = nullptr, QTcpSocket *socket = nullptr);
     ~Client();
-
+    QTcpSocket *Socket;
     int Id;
 public slots:
     void Read();
@@ -18,8 +19,8 @@ public slots:
 signals:
     void Send(QByteArray);
     void Close(Client*);
+private:
 
-    QTcpSocket *Socket;
 };
 
 #endif // CLIENT_H

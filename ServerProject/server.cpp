@@ -1,4 +1,5 @@
 #include "server.h"
+#include <string>
 
 Server::Server(QObject *parent): QObject{parent}
 {
@@ -29,13 +30,13 @@ void Server::slotNewConnection() {
 // функция для широковещательного сообщения
 void Server::slotMessage(QByteArray message){
     qDebug() << "Start broadcast";
-
     foreach(Client * cleint, Clients){
         cleint->Socket->write(message + "\r\n");
     }
 }
 // удаление из списка отключившегося клиента
 void Server::slotRemove(Client * client){
+    client->Socket->close();
     Clients.remove(Clients.indexOf(client));
     qDebug() << "Client disconnected";
 }
