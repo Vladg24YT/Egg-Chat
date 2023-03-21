@@ -1,4 +1,6 @@
 #include "server.h"
+#include "parser.h"
+#include <string>
 
 Server::Server(QObject *parent): QObject{parent}
 {
@@ -29,7 +31,6 @@ void Server::slotNewConnection() {
 // функция для широковещательного сообщения
 void Server::slotMessage(QByteArray message){
     qDebug() << "Start broadcast";
-
     foreach(Client * cleint, Clients){
         cleint->Socket->write(message + "\r\n");
     }
