@@ -9,6 +9,7 @@ CONFIG -= app_bundle
 
 SOURCES += \
         functions.cpp \
+        client.cpp \
         main.cpp \
         parser.cpp \
         server.cpp
@@ -21,4 +22,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     functions.h \
     parser.h \
+    client.h \
     server.h

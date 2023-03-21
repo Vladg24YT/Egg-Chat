@@ -17,31 +17,33 @@ Server::Server(QObject *parent): QObject{parent}
 }
 void Server::slotNewConnection() {
     if (serverStatus == 1) {
-        TcpSocket = TcpServer->nextPendingConnection();
-        qDebug() << TcpSocket->peerAddress();
-        TcpSocket->write("Welcome to the echo server!\r\n");
-        connect(TcpSocket, &QTcpSocket::readyRead, this, &Server::slotRead);
-        connect(TcpSocket,&QTcpSocket::disconnected, this, &Server::slotCloseClientConnection);
+        QTcpSocket * sok = TcpServer->nextPendingConnection();
+        qDebug() << sok->peerAddress();
+        Client *client = new Client(this, sok);
+        client->Id = sok->peerPort();
+        // подключение сигналов для отправки сообщения и закрытия соединения клиента к слотам сервера
+        connect(client, &Client::Send, this, &Server::slotMessage);
+        connect(client, &Client::Close, this, &Server::slotRemove);
+        Clients << client;
+        client->Socket->write("Welcome to the echo server!\r\n");
     }
 }
-
-void Server::slotRead() {
-    while(TcpSocket->bytesAvailable()>0)
-    {
-        QByteArray array = TcpSocket->readAll();
-        std::string line = array.toStdString();
-        qDebug() << array;
-
-        array = QByteArray::fromStdString(parser(line));
-
-        TcpSocket->write(array);
+// функция для широковещательного сообщения
+void Server::slotMessage(QByteArray message){
+    qDebug() << "Start broadcast";
+    foreach(Client * cleint, Clients){
+        cleint->Socket->write(message + "\r\n");
     }
 }
-void Server::slotCloseClientConnection() {
-    TcpSocket->close();
+// удаление из списка отключившегося клиента
+void Server::slotRemove(Client * client){
+    Clients.remove(Clients.indexOf(client));
+    qDebug() << "Client disconnected";
 }
-
+// деструктор
 Server::~Server() {
-    TcpSocket->close();
-    serverStatus = 1;
+    foreach(Client * cleint, Clients){
+        cleint->Socket->close();
+    }
+    serverStatus = 0;
 }
