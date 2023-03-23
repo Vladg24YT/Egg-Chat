@@ -2,11 +2,15 @@
 #define PARSER_H
 
 #include <string>
+#include <vector>
 
-class parser
+class Parser
 {
+
 public:
-    parser();
+    Parser();
+    static std::string parser(std::string line);
+    static std::string commandRecognizer(std::vector<std::string> words);
 };
-std::string parser(std::string line);
+
 #endif // PARSER_H

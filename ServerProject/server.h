@@ -17,7 +17,6 @@ public:
     ~Server();
 public slots:
     void slotNewConnection();
-    void slotCloseClientConnection();
     void slotMessage(QByteArray);
     void slotRemove(Client*);
 private:

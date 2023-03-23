@@ -1,5 +1,4 @@
 #include "server.h"
-#include "parser.h"
 #include <string>
 
 Server::Server(QObject *parent): QObject{parent}
@@ -37,6 +36,7 @@ void Server::slotMessage(QByteArray message){
 }
 // удаление из списка отключившегося клиента
 void Server::slotRemove(Client * client){
+    client->Socket->close();
     Clients.remove(Clients.indexOf(client));
     qDebug() << "Client disconnected";
 }
