@@ -1,6 +1,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include "client.h"
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -16,11 +17,11 @@ public:
     ~Server();
 public slots:
     void slotNewConnection();
-    void slotCloseClientConnection();
-    void slotRead();
+    void slotMessage(QByteArray);
+    void slotRemove(Client*);
 private:
     QTcpServer * TcpServer;
-    QTcpSocket * TcpSocket;
+    QList<Client*> Clients;
     int serverStatus;
 };
 
