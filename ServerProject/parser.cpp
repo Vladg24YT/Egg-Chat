@@ -12,7 +12,7 @@ std::string Parser::parser(std::string line) {
 
    // проверяем что получили именно команду
    if (line[0] != '/')
-        return "This is not a command!\n";
+        return "This is not a command!";
     // вектор для хранения слов строки
     // 0-й элемент - команда
     std::vector<std::string> words;

@@ -8,6 +8,7 @@
 #include <QtNetwork>
 #include <QByteArray>
 #include <QDebug>
+#include <QMap>
 
 class Server : public QObject
 {
@@ -21,7 +22,8 @@ public slots:
     void slotRemove(Client*);
 private:
     QTcpServer * TcpServer;
-    QList<Client*> Clients;
+    //QList<Client*> Clients;
+    QMap<int, Client*> Clnts;
     int serverStatus;
 };
 

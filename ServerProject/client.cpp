@@ -13,7 +13,7 @@ void Client::Read(){
     {
         QByteArray command = Socket->readAll();
         qDebug() << command;
-        emit Send(QByteArray::fromStdString(Parser::parser(command.toStdString())) + "\r\n");
+        emit Send(QByteArray::fromStdString(Parser::parser(command.toStdString())) + " " + QString::number(this->Id).toUtf8());
 
     }
 }
