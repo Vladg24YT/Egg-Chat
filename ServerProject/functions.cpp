@@ -21,7 +21,9 @@ std::string registration(std::string name, std::string password){
     return out;
 }
 std::string sendMessage(std::string chatID, std::string text){
-    std::string out = "User sent message \"" + text + "\" to chat " + chatID;
+    //std::string out = "User sent message \"" + text + "\" to chat " + chatID;
+    // временно передалал для отправки сообщения одному пользователю (chatID = userID получаетеля)
+    std::string out = text + " " + chatID;
     return out;
 }
 

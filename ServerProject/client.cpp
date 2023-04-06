@@ -13,8 +13,18 @@ void Client::Read(){
     {
         QByteArray command = Socket->readAll();
         qDebug() << command;
-        emit Send(QByteArray::fromStdString(Parser::parser(command.toStdString())) + "\r\n");
+        QString c = QString::fromStdString(command.toStdString())[1];
+        c += QString::fromStdString(command.toStdString())[2];
+        qDebug() << c;
+        if (c == "me"){
+            qDebug() << 1;
+             emit Send(QByteArray::fromStdString(Parser::parser(command.toStdString())));
+        }
+        else{
+            qDebug() << 2;
 
+            emit Send(QByteArray::fromStdString(Parser::parser(command.toStdString())) + " " + QString::number(this->Id).toUtf8());
+        }
     }
 }
 void Client::OnClosing(){
