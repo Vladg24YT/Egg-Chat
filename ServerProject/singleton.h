@@ -7,8 +7,8 @@ class SingletonDestroyer{
 private:
     static Singleton * p_instance;
 public:
-    ~SingletonDestroyer(){ delete p_instance; }
-    void init(Singleton * p) { p_instance = p; }
+    ~SingletonDestroyer();
+    void init(Singleton*);
 };
 
 class Singleton{
@@ -21,17 +21,9 @@ protected:
     Singleton(const Singleton&) = delete;
     Singleton& operator = (Singleton&) = delete;
 public:
-    static Singleton* getInstance(){
-        if (!p_instance){
-            p_instance = new Singleton();
-            destroyer.init(p_instance);
-        }
-        return p_instance;
-    }
+    static Singleton* getInstance();
 };
 
-Singleton* Singleton::p_instance;
-SingletonDestroyer Singleton::destroyer;
-Singleton* SingletonDestroyer::p_instance;
+
 
 #endif // SINGLETON_H
