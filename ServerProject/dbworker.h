@@ -19,10 +19,26 @@ private:
 
     static QSqlDatabase db;
 
-    static void open();
+    static void open(){
+        // чтобы заставить работать этот код, нужно изменить переменную ниже на путь к файлу "sqlite.db"
+        QString path = "";
+#ifdef DEBUG
+        path = "C:/Users/rustv/Documents/QtProjects/Egg-Chat/bdWorker/";
+        qDebug() << "def DEBUG";
+#endif
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setDatabaseName(path + "sqlite.db");
+        if (!db.open()) qDebug() << db.lastError().text();
+        qDebug() << "init";
+    }
 public:
-    static void createDB();
-    static void close();
+    static void createDB(){
+        getInstance();
+        if (!db.isOpen()) open();
+    }
+    static void close(){
+        if (db.isOpen()) db.close();
+    }
 
     // временный метод для проверки работоспособности
     static void selectFromDB(){
