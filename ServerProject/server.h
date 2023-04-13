@@ -1,12 +1,14 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include "client.h"
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QtNetwork>
 #include <QByteArray>
 #include <QDebug>
+#include <QMap>
 
 class Server : public QObject
 {
@@ -16,11 +18,12 @@ public:
     ~Server();
 public slots:
     void slotNewConnection();
-    void slotCloseClientConnection();
-    void slotRead();
+    void slotMessage(QByteArray);
+    void slotRemove(Client*);
 private:
     QTcpServer * TcpServer;
-    QTcpSocket * TcpSocket;
+    //QList<Client*> Clients;
+    QMap<int, Client*> Clnts;
     int serverStatus;
 };
 
