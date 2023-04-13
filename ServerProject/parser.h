@@ -6,7 +6,6 @@
 
 class Parser
 {
-
 public:
     Parser();
     static std::string parser(std::string line);

@@ -17,61 +17,55 @@ Server::Server(QObject *parent): QObject{parent}
 void Server::slotNewConnection() {
     if (serverStatus == 1) {
         QTcpSocket * sok = TcpServer->nextPendingConnection();
-        qDebug() << sok->peerAddress();
+        qDebug() << sok->peerAddress() << sok->socketDescriptor();
         Client *client = new Client(this, sok);
-        client->Id = sok->peerPort();
         // подключение сигналов для отправки сообщения и закрытия соединения клиента к слотам сервера
-        connect(client, &Client::Send, this, &Server::slotMessage);
+        connect(client, &Client::Message, this, &Server::slotMessage);
         connect(client, &Client::Close, this, &Server::slotRemove);
-        //Clients << client;
-        QString clID = QString::number(client->Id);
-        QString message = "Welcome to the echo server! Your ID = " + clID;
-        //client->Socket->write("Welcome to the echo server!\r\n");
-        Clnts.insert(client->Id, client);
+        QString clID = QString::number(sok->socketDescriptor());
+        QString message = "Welcome to the server! Your ID = " + clID;
+        Clients.insert(sok->socketDescriptor(), client);
         client->Socket->write(message.toUtf8());
     }
 }
-// функция для широковещательного сообщения
-//void Server::slotMessage(QByteArray message){
-//    qDebug() << "Start broadcast";
-//    foreach(Client * cleint, Clients){
-//        cleint->Socket->write(message + "\r\n");
+//функция отправки сообщения конкретному пользователю
+//void Server::slotSend(QByteArray message){
+//    QString clID;
+//    int i = message.size() - 1;
+
+//    while (message[i] != ' ' && i >= 0){
+//        clID = message[i] + clID;
+//        i--;
+//    }
+//    if (clID != '0')
+//    {
+//        qDebug() << "Sending message to userID = " + clID;
+//        try{
+//            Clients[clID.toInt()]->Socket->write(message);
+//        }
+//        catch(...){
+//            qDebug() << "Could not sent a message to userID = " + clID;
+//        }
+//    }
+//    else{
+//        qDebug() << "Sending message to everyone";
+//        foreach(Client * clnt, Clients){
+//            clnt->Socket->write(message);
+//        }
 //    }
 //}
-
-//функция отправки сообщения конкретному пользователю
-void Server::slotMessage(QByteArray message){
-    QString clID;
-    int i = message.size() - 1;
-
-    while (message[i] != ' ' && i >= 0){
-        clID = message[i] + clID;
-        i--;
-    }
-
-    if (clID != '0')
-    {
-        qDebug() << "Sending message to userID = " + clID;
-        try{
-            Clnts[clID.toInt()]->Socket->write(message);
-        }
-        catch(...){
-            qDebug() << "Could not sent a message to userID = " + clID;
-        }
-    }
-    else{
-        qDebug() << "Sending message to everyone";
-        foreach(Client * clnt, Clnts){
-            clnt->Socket->write(message);
-        }
+void Server::slotMessage(QString chatID, QString text){
+    qDebug() << "Start broadcast";
+    foreach(Client * clnt, Clients){
+        clnt->Socket->write(QByteArray(text.toUtf8()));
     }
 }
 
 // удаление из списка отключившегося клиента
 void Server::slotRemove(Client * client){
-    client->Socket->close();
     //Clients.remove(Clients.indexOf(client));
-    Clnts.remove(client->Id);
+    Clients.remove(client->Socket->socketDescriptor());
+    client->Socket->close();
     qDebug() << "Client disconnected";
 }
 // деструктор
@@ -79,7 +73,7 @@ Server::~Server() {
     //foreach(Client * cleint, Clients){
     //    cleint->Socket->close();
     //}
-    foreach(Client * clnt, Clnts){
+    foreach(Client * clnt, Clients){
         clnt->Socket->close();
     }
     serverStatus = 0;

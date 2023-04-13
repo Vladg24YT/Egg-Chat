@@ -18,7 +18,7 @@ void DBWorker::createDB(){
     if (!db.isOpen()) open();
 }
 void DBWorker::close(){
-     if (db.isOpen()) db.close();
+    if (db.isOpen()) db.close();
 }
 
 void DBWorker::selectFromDB(){
@@ -34,4 +34,24 @@ void DBWorker::selectFromDB(){
     catch (...) {qDebug() << "Виу-виу! Код красный - код не робит!"; }
 }
 
+bool DBWorker::SearchUser(QString login, QString password){
+    createDB();
+    QSqlQuery query = QSqlQuery(db);
+    query.prepare("select * from users where login = ? and password = ?");
+    query.addBindValue(login);
+    query.addBindValue(password);
+    query.exec();
+    qDebug() << query.lastError();
+    bool isExist = false;
+    try{
+        while (query.next()){
+            isExist = true;
+            QSqlRecord rec = query.record();
+            const int idIndex = rec.indexOf("id");
+            qDebug() << query.value(idIndex).toString();
+        }}
+    catch (...) {qDebug() << db.lastError(); }
+    close();
+    return isExist;
+}
 QSqlDatabase DBWorker::db;

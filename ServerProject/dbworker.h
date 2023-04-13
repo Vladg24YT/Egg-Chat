@@ -7,7 +7,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlRecord>
-#include "Singleton.h"
+#include <singleton.h>
 //переключение режима, для запуска на винде или в докере
 #define DEBUG
 
@@ -26,7 +26,7 @@ public:
 
     // временный метод для проверки работоспособности
     static void selectFromDB();
-
+    static bool SearchUser(QString login, QString password);
     // методы обращения к бд (сделать отдельные модели или списки для данных, которые возращаются)
     // поиск пользователя по ID если нет вернуть false
     // получение чатов определенного пользователя
