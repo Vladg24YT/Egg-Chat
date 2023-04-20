@@ -14,7 +14,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     bool mode = true; // false - login, true - reg
     bool emailChange = true, loginChange = true,
-         passChange = true;
+         passChange = true, newChatCreate = true, // false - chatting, true - creating new chat
+         invNewUserMode = true;
+
 
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -31,11 +33,34 @@ private slots:
 
     void on_changeLoginBtn_clicked();
 
+    void on_checkBox_2_stateChanged(int arg1);
+
+    void on_logoutBtn_clicked();
+
+    void on_listWidget_itemSelectionChanged();
+
+    void changeChatMode();
+
+    void on_pushButton_clicked();
+
+    void on_CreateNewChat_clicked();
+
+    void on_InviteUserBtn_clicked();
+
+    void on_leaveChatBtn_clicked();
+
+    void changeInvUserMode();
+
+    void on_InvUserBtn_clicked();
+
+    void on_ChatLine_returnPressed();
+
 private:
     void changeMode();
     void changePassMode();
     void changeEmailMode();
     void changeLoginMode();
     Ui::MainWindow *ui;
+    void createNewChat();
 };
 #endif // MAINWINDOW_H

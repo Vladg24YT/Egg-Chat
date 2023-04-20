@@ -8,12 +8,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     changeMode();
-    QPixmap avatar(QDir::currentPath() +  "/ava.jpg");
-    avatar = avatar.scaled(128, 128, Qt::KeepAspectRatio);
-    ui->LogoLabel->setPixmap(avatar);
     changePassMode();
     changeEmailMode();
     changeLoginMode();
+    changeChatMode();
+    changeInvUserMode();
+
+    // потом удалить
+    ui->NotifList->addItem("Здесь будут приглашения в чаты. Но пока тут ничего нет...");
 }
 
 MainWindow::~MainWindow()
@@ -23,7 +25,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::changeMode()
 {
-    passChange = !passChange;
+    mode = !mode;
 
     ui->Email->setVisible(mode);
     ui->EmailLine->setVisible(mode);
@@ -42,13 +44,13 @@ void MainWindow::changeMode()
 
 void MainWindow::changePassMode()
 {
-    mode = !mode;
-    ui->OldPassLabel->setVisible(mode);
-    ui->oldPassLine->setVisible(mode);
-    ui->NewPassLabel->setVisible(mode);
-    ui->NewPassLabel2->setVisible(mode);
-    ui->NewPassLine->setVisible(mode);
-    ui->NewPassLine_2->setVisible(mode);
+    passChange = !passChange;
+    ui->OldPassLabel->setVisible(passChange);
+    ui->oldPassLine->setVisible(passChange);
+    ui->NewPassLabel->setVisible(passChange);
+    ui->NewPassLabel2->setVisible(passChange);
+    ui->NewPassLine->setVisible(passChange);
+    ui->NewPassLine_2->setVisible(passChange);
 }
 
 void MainWindow::changeEmailMode()
@@ -100,6 +102,7 @@ void MainWindow::on_SignButton_clicked()
 void MainWindow::on_ChangePassBtn_clicked()
 {
     changePassMode();
+    ui->listWidget->addItem(QString::number(ui->listWidget->count() + 1));
 }
 
 
@@ -112,5 +115,102 @@ void MainWindow::on_ChangeEmailBtn_clicked()
 void MainWindow::on_changeLoginBtn_clicked()
 {
     changeLoginMode();
+}
+
+
+void MainWindow::on_checkBox_2_stateChanged(int arg1)
+{
+    qDebug() << "Theme change";
+}
+
+
+void MainWindow::on_logoutBtn_clicked()
+{
+    qDebug() << "logout";
+}
+
+
+void MainWindow::on_listWidget_itemSelectionChanged()
+{
+    qDebug() << ui->listWidget->currentIndex();
+}
+
+void MainWindow::changeChatMode()
+{
+    newChatCreate = !newChatCreate;
+
+    if (!newChatCreate){
+        ui->NewChatSp1->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
+        ui->NewChatSp2->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
+    }
+    else{
+        ui->NewChatSp1->changeSize(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
+        ui->NewChatSp2->changeSize(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
+    }
+
+    ui->CreateNewChat->setVisible(newChatCreate);
+    ui->NewChatDesc->setVisible(newChatCreate);
+    ui->NewChatDescLabel->setVisible(newChatCreate);
+    ui->NewChatHLine->setVisible(newChatCreate);
+    ui->NewChatLabel->setVisible(newChatCreate);
+    ui->NewChatNameLabel->setVisible(newChatCreate);
+    ui->NewChatNameLine->setVisible(newChatCreate);
+
+    ui->ChatBrowser->setVisible(!newChatCreate);
+    ui->ChatLine->setVisible(!newChatCreate);
+    ui->CurrentChatName->setVisible(!newChatCreate);
+    ui->InviteUserBtn->setVisible(!newChatCreate);
+    ui->leaveChatBtn->setVisible(!newChatCreate);
+}
+
+
+void MainWindow::createNewChat(){
+    changeChatMode();
+    qDebug() << "New chat created";
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    changeChatMode();
+}
+
+
+void MainWindow::on_CreateNewChat_clicked()
+{
+    createNewChat();
+}
+
+
+void MainWindow::on_InviteUserBtn_clicked()
+{
+    changeInvUserMode();
+}
+
+
+void MainWindow::on_leaveChatBtn_clicked()
+{
+    ui->ChatBrowser->append("Вы вышли из этого чата");
+}
+
+void MainWindow::changeInvUserMode()
+{
+    invNewUserMode = !invNewUserMode;
+    ui->InvUserBtn->setVisible(invNewUserMode);
+    ui->InvUserIDLine->setVisible(invNewUserMode);
+    ui->InvUserLabel->setVisible(invNewUserMode);
+}
+
+
+void MainWindow::on_InvUserBtn_clicked()
+{
+    ui->ChatBrowser->append("Вы добавили нового пользователя " + ui->InvUserIDLine->text());
+    changeInvUserMode();
+}
+
+
+void MainWindow::on_ChatLine_returnPressed()
+{
+    ui->ChatBrowser->append(ui->ChatLine->text());
+    ui->ChatLine->clear();
 }
 
