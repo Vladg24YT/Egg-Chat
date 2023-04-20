@@ -59,29 +59,8 @@ void Client::parser(QString line) {
 //		//        else if (words[0] == "sr") // подать жалобу
 //		//            if (words.size() == 3 && words[1] != "" && words[2] != "")
 //		//                return sendReport(words[1], words[2]);
-//		//            else
-//		//                return "Wrong data set!";
-//		//        // команды админа
-//		//        else if (words[0] == "bn")
-//		//            if (words.size() == 3 && words[1] != "" && words[2] != "")
-//		//                return banUser(words[1], words[2]);
-//		//            else
-//		//                return "Wrong data set!";
-//		//        else if (words[0] == "ub")
-//		//            if (words.size() == 2 && words[1] != "")
-//		//                return unbanUser(words[1]);
-//		//            else
-//		//                return "No userID provided!";
-//		//        else
-//		//            return "No such command!";
-//	}
-//	if (!isAuth)
-//		send("Unauthorized access!");
-//	else send("Wrong data!");
-//
-//
-//}
-// Считывание строки клиентом
+
+
 void Client::Read() {
 	while (Socket->bytesAvailable() > 0) {
 		QByteArray command = Socket->readAll();
