@@ -1,4 +1,4 @@
-ServerProject/ServerProject.pro.user
+*.pro.user*
 # cache from vscode #
 /.vscode
 /build*
