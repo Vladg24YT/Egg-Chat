@@ -13,6 +13,7 @@ WORKDIR /root/server/
 COPY *.cpp /root/server/
 COPY *.h /root/server/
 COPY *.pro /root/server/
+COPY *.db /root/server/
 
 RUN qmake ServerProject.pro
 RUN make

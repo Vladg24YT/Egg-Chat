@@ -3,6 +3,8 @@
 
 Server::Server(QObject *parent): QObject{parent}
 {
+    DBWorker::createDB();
+
     TcpServer = new QTcpServer(this);
     connect(TcpServer, &QTcpServer::newConnection, this, &Server::slotNewConnection);
 
@@ -28,32 +30,7 @@ void Server::slotNewConnection() {
         client->Socket->write(message.toUtf8());
     }
 }
-//функция отправки сообщения конкретному пользователю
-//void Server::slotSend(QByteArray message){
-//    QString clID;
-//    int i = message.size() - 1;
 
-//    while (message[i] != ' ' && i >= 0){
-//        clID = message[i] + clID;
-//        i--;
-//    }
-//    if (clID != '0')
-//    {
-//        qDebug() << "Sending message to userID = " + clID;
-//        try{
-//            Clients[clID.toInt()]->Socket->write(message);
-//        }
-//        catch(...){
-//            qDebug() << "Could not sent a message to userID = " + clID;
-//        }
-//    }
-//    else{
-//        qDebug() << "Sending message to everyone";
-//        foreach(Client * clnt, Clients){
-//            clnt->Socket->write(message);
-//        }
-//    }
-//}
 void Server::slotMessage(QString chatID, QString text){
     qDebug() << "Start broadcast";
     foreach(Client * clnt, Clients){
@@ -76,5 +53,6 @@ Server::~Server() {
     foreach(Client * clnt, Clients){
         clnt->Socket->close();
     }
+    DBWorker::close();
     serverStatus = 0;
 }

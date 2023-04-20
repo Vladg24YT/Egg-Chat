@@ -1,160 +1,166 @@
 #include "client.h"
 
-Client::Client(QObject *parent, QTcpSocket * socket) : QObject{parent}
-{
-    Socket = socket;
-    connect(Socket, &QTcpSocket::readyRead, this, &Client::Read);
-    connect(Socket, &QTcpSocket::disconnected, this, &Client::OnClosing);
-}
-// парсер комманд
-void Client::parser(std::string line) {
-    /*
-        Эта функция делит входящую команду
-        на комнаду и агрументы
-    */
-    // проверяем что получили именно команду
-    if (line[0] != '/')
-        send("This is not a command!");
-    // вектор для хранения слов строки
-    // 0-й элемент - команда
-    std::vector<std::string> words;
+#include <QList>
 
-    // вычленяем команду
-    words.push_back(line.substr(1, 2));
-
-    std::string tmp = "";
-
-    for (int i = 3; i < line.size(); i++){
-        if (line[i] == ':'){
-            words.push_back(tmp);
-            tmp = "";
-        }
-        else
-            tmp = tmp + line[i];
-    }
-    words.push_back(tmp);
-    commandRecognizer(words);
+Client::Client(QObject* parent, QTcpSocket* socket) : QObject{ parent }{
+	Socket = socket;
+	connect(Socket, &QTcpSocket::readyRead, this, &Client::Read);
+	connect(Socket, &QTcpSocket::disconnected, this, &Client::OnClosing);
 }
-void Client::commandRecognizer(std::vector<std::string> words){
-    /*
-        Определяет какую команду получил на
-        вход и кому её дальше отправлять
-    */
-    if (words[0] == "la") // логин админа
-        if (words.size() == 3)
-            return;
-        else
-            return send("Wrong data set!");
-    else if (words[0] == "lu") // логин пользователя
-        if (words.size() == 3)
-            if (auth(QString::fromStdString(words[1]), QString::fromStdString(words[2]))){
-                return send("Successful authorization!");
-            }
-            else return send("Wrong login or password!");
-        else
-            return send("Wrong data set!");
-    if (isAuth){
-        //        else if (words[0] == "lo") // выход из учётки)
-        //            if (words.size() == 2)
-        //                return logout();
-        //            else
-        //                return "No arguments expected!";
-        if (words[0] == "rg"){ // регистрация
-            if (words.size() == 3){
-                if (registration(QString::fromStdString(words[1]), QString::fromStdString(words[2]))){
-                    send("Successful registration!");
-                }
-                else send("Login is unavailable!");
-                return;}}
-        else if (words[0] == "me"){ // отправка сообщения
-            if (words.size() == 3 && words[1] != "" && words[2] != ""){
-                emit Message(QString::fromStdString(words[1]),QString::fromStdString(words[1]));
-                return;}}
-        //        else if (words[0] == "nc")
-        //            if (words.size() == 2 && words[1] != "")
-        //                return newChat(words[1]);
-        //            else
-        //                return "No chat name provided!";
-        //        else if (words[0] == "rc")
-        //            if (words.size() == 2 && words[1] != "")
-        //                return removeChat(words[1]);
-        //            else
-        //                return "No chatID provided!";
-        //        else if (words[0] == "lc")
-        //            if (words.size() == 2 && words[1] != "")
-        //                return leaveChat(words[1]);
-        //            else
-        //                return "No chatID provided!";
-        //        else if (words[0] == "iu")
-        //            if (words.size() == 3 && words[1] != "" && words[2] != "")
-        //                return inviteUserToChat(words[1], words[2]);
-        //            else
-        //                return "Wrong data set!";
-        //        else if (words[0] == "ai")
-        //            if (words.size() == 3 && (words[1] == "0" || words[1] == "1") && words[2] != "")
-        //                return answerInvite(words[1], words[2]);
-        //            else
-        //                return "Wrong data set!";
-        //        else if (words[0] == "ku")
-        //            if (words.size() == 3 && words[1] != "" && words[2] != "")
-        //                return kickUserFromChat(words[1], words[2]);
-        //            else
-        //                return "Wrong data set!";
-        //        else if (words[0] == "sr") // подать жалобу
-        //            if (words.size() == 3 && words[1] != "" && words[2] != "")
-        //                return sendReport(words[1], words[2]);
-        //            else
-        //                return "Wrong data set!";
-        //        // команды админа
-        //        else if (words[0] == "bn")
-        //            if (words.size() == 3 && words[1] != "" && words[2] != "")
-        //                return banUser(words[1], words[2]);
-        //            else
-        //                return "Wrong data set!";
-        //        else if (words[0] == "ub")
-        //            if (words.size() == 2 && words[1] != "")
-        //                return unbanUser(words[1]);
-        //            else
-        //                return "No userID provided!";
-        //        else
-        //            return "No such command!";
-    }
-    send("Unauthorized access!");
+void Client::parser(QString line) {
+	std::vector<QString> words;
+
+	for (QString word : line.split("|")) words.push_back(word);
+	if (words.size() <= 0) return send("There is no any command!");
+
+	if (words[0] == "login") return login(words);
+	if (words[0] == "reg") return registration(words);
+	if (words[0] == "logout") return logout();
+	if (words[0] == "message") {
+		if (words.size() > 1) {
+			if (words[1] == "get") return getMessage(words);
+			if (words[1] == "send" && words.size() == 4)
+				if (words[2] != "" && words[3] != "") return emit Message(words[2], words[3]); // нужно id или nickname
+		}
+		return send("Invalid message command!");
+	}
+	if (words[0] == "chat") {
+		if (words.size() > 1) {
+			if (words[1] == "get") return getChats();
+			if (words[1] == "create") return createChat(words);
+			if (words[1] == "leave") return leaveChat(words);
+			if (words[1] == "remove") return removeChat(words);
+		}
+		return send("Invalid chat command!");
+	}
+	if (words[0] == "")
+	{
+
+	}
+
+	return send("Invalid command!");
 }
+
+//		//        else if (words[0] == "iu")
+//		//            if (words.size() == 3 && words[1] != "" && words[2] != "")
+//		//                return inviteUserToChat(words[1], words[2]);
+//		//            else
+//		//                return "Wrong data set!";
+//		//        else if (words[0] == "ai")
+//		//            if (words.size() == 3 && (words[1] == "0" || words[1] == "1") && words[2] != "")
+//		//                return answerInvite(words[1], words[2]);
+//		//            else
+//		//                return "Wrong data set!";
+//		//        else if (words[0] == "ku")
+//		//            if (words.size() == 3 && words[1] != "" && words[2] != "")
+//		//                return kickUserFromChat(words[1], words[2]);
+//		//            else
+//		//                return "Wrong data set!";
+//		//        else if (words[0] == "sr") // подать жалобу
+//		//            if (words.size() == 3 && words[1] != "" && words[2] != "")
+//		//                return sendReport(words[1], words[2]);
+//		//            else
+//		//                return "Wrong data set!";
+//		//        // команды админа
+//		//        else if (words[0] == "bn")
+//		//            if (words.size() == 3 && words[1] != "" && words[2] != "")
+//		//                return banUser(words[1], words[2]);
+//		//            else
+//		//                return "Wrong data set!";
+//		//        else if (words[0] == "ub")
+//		//            if (words.size() == 2 && words[1] != "")
+//		//                return unbanUser(words[1]);
+//		//            else
+//		//                return "No userID provided!";
+//		//        else
+//		//            return "No such command!";
+//	}
+//	if (!isAuth)
+//		send("Unauthorized access!");
+//	else send("Wrong data!");
+//
+//
+//}
 // Считывание строки клиентом
-void Client::Read(){
-    while(Socket->bytesAvailable() > 0){
-        QByteArray command = Socket->readAll();
-        qDebug() << command;
-        QString c = QString(command).at(1);
-        c += QString(command).at(2);
-        qDebug() << c;
-        parser(command.toStdString());
-        //        if (c == "me"){
-        //            qDebug() << 1;
-        //            emit Send(QByteArray::fromStdString(Parser::parser(command.toStdString())));
-        //        }
-        //        else{
-        //            qDebug() << 2;
+void Client::Read() {
+	while (Socket->bytesAvailable() > 0) {
+		QByteArray command = Socket->readAll();
+		qDebug() << command;
+		QString c = QString(command).at(1);
+		c += QString(command).at(2);
+		qDebug() << c;
+		parser(command);
+	}
+}
+void Client::login(std::vector<QString> words) {
+	if (words.size() != 3 || (words[1] == "" || words[2] == ""))
+		return send("Wrong login or password!");
+	else {
+		isAuth = DBWorker::searchUser(words[1], words[2]);
+		if (isAuth) {
+			id = DBWorker::getUserID(words[1], words[2]);
+			return send("Successful authorization!");
+		}
+		return send("Wrong login or password!");
+	}
+}
+void Client::registration(std::vector<QString> words) {
+	if (words.size() != 4 || (words[1] == "" || words[2] == "" || words[3] == ""))
+		send("Wrong data!");
+	else {
 
-        //            emit Send(QByteArray::fromStdString(Parser::parser(command.toStdString())) + " ");
-        //        }
-    }
+		isAuth = DBWorker::searchUser(words[1], words[2]);
+		if (isAuth) {
+			id = DBWorker::getUserID(words[1], words[2]);
+			send("Successful authorization!");
+		}
+		send("Wrong login or password!");
+	}
 }
-bool Client::auth(QString login, QString password){
-    isAuth = DBWorker::SearchUser(login, password);
-    return isAuth;
+void Client::createChat(std::vector<QString> words) {
+	if (words.size() == 4)
+		if (words[2] != "" && words[3] != "") return DBWorker::insertChat(id, words[2], words[3]);
+	return send("Invalid chat command!");
 }
-bool Client::registration(QString login, QString password){
-    isAuth = true;
-    return true;
+void Client::leaveChat(std::vector<QString> words) {
+	if (words.size() == 3)
+		if (words[2] != "") return DBWorker::leaveChat(id, words[3].toInt());
+	return send("Invalid chat command!");
 }
-void Client::send(QString text){
-    Socket->write(text.toUtf8());
+void Client::removeChat(std::vector<QString> words) {
+	if (words.size() == 3)
+		if (words[2] != "") return DBWorker::removeChat(words[3].toInt());
+	return send("Invalid chat command!");
 }
-void Client::OnClosing(){
-    emit Close(this);
+void Client::getChats() {
+	QList<Chat*> chats = DBWorker::selectUserChats(id);
+	QString response;
+	foreach(Chat * chat, chats) {
+		response += chat->ToString();
+	}
+	for (int i = 0; i < chats.count(); i++) {
+		delete chats.at(i);
+	}
+	chats.clear();
+	send(response);
 }
-Client::~Client(){
-    Socket->close();
+void Client::send(QString text) {
+	Socket->write(text.toUtf8());
+}
+void Client::logout() {
+	qDebug() << id << " logout";
+	send("LOGOUT");
+	isAuth = false;
+	id = 0;
+}
+void Client::getMessage(std::vector<QString> words) {
+	if (words.size() == 3)
+		if (words[2] != "") return send(DBWorker::selectMessages(words[2].toInt()));
+	return send("Invalid message command!");
+}
+void Client::OnClosing() {
+	emit Close(this);
+}
+Client::~Client() {
+	Socket->close();
 }
