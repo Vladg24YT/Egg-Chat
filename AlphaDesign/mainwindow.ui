@@ -84,6 +84,11 @@
           </item>
           <item>
            <widget class="QLabel" name="Email">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>E-mail</string>
             </property>
