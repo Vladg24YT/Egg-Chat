@@ -15,7 +15,8 @@ class MainWindow : public QMainWindow
     bool mode = true; // false - login, true - reg
     bool emailChange = true, loginChange = true,
          passChange = true, newChatCreate = true, // false - chatting, true - creating new chat
-         invNewUserMode = true;
+         invNewUserMode = true,
+         loginedUser = false; // вошел ли юзер в аккаунт
 
 
 public:
@@ -54,6 +55,8 @@ private slots:
     void on_InvUserBtn_clicked();
 
     void on_ChatLine_returnPressed();
+
+    void changeAccountStatus(bool newStatus);
 
 private:
     void changeMode();
