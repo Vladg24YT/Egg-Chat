@@ -105,7 +105,6 @@ void MainWindow::on_SignButton_clicked()
 void MainWindow::on_ChangePassBtn_clicked()
 {
     changePassMode();
-    ui->listWidget->addItem(QString::number(ui->listWidget->count() + 1));
 }
 
 
@@ -170,11 +169,14 @@ void MainWindow::changeChatMode()
 
 void MainWindow::createNewChat(){
     changeChatMode();
+
+    ui->listWidget->addItem(ui->NewChatNameLine->text());
     qDebug() << "New chat created";
 }
 
 void MainWindow::on_pushButton_clicked()
 {
+    if (invNewUserMode) changeInvUserMode();
     changeChatMode();
 }
 
