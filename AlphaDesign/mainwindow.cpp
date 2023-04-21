@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     changeChatMode();
     changeInvUserMode();
 
+    changeAccountStatus(false);
     // потом удалить
     ui->NotifList->addItem("Здесь будут приглашения в чаты. Но пока тут ничего нет...");
 }
@@ -96,6 +97,8 @@ void MainWindow::on_SignButton_clicked()
     }
     if (ui->checkBox->isChecked())
         qDebug() << "We will never forget you!";
+
+    changeAccountStatus(true);
 }
 
 
@@ -127,6 +130,7 @@ void MainWindow::on_checkBox_2_stateChanged(int arg1)
 void MainWindow::on_logoutBtn_clicked()
 {
     qDebug() << "logout";
+    changeAccountStatus(false);
 }
 
 
@@ -212,5 +216,22 @@ void MainWindow::on_ChatLine_returnPressed()
 {
     ui->ChatBrowser->append(ui->ChatLine->text());
     ui->ChatLine->clear();
+}
+
+void MainWindow::changeAccountStatus(bool newStatus)
+{
+    loginedUser = newStatus;
+
+    for (int i = 1; i < 5; i++)
+        ui->tabWidget->setTabEnabled(i, newStatus);
+
+    if (newStatus){
+        ui->tabWidget->setCurrentIndex(1);
+        ui->tabWidget->setTabEnabled(0, false);
+    }
+    else{
+        ui->tabWidget->setCurrentIndex(0);
+        ui->tabWidget->setTabEnabled(0, true);
+    }
 }
 

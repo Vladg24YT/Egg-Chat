@@ -27,7 +27,7 @@
        <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="AuthTab">
        <attribute name="title">
@@ -263,7 +263,7 @@
         <string>Chats</string>
        </attribute>
        <layout class="QFormLayout" name="formLayout">
-        <item row="0" column="0">
+        <item row="1" column="0">
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
            <widget class="QListWidget" name="listWidget">
@@ -289,7 +289,7 @@
           </item>
          </layout>
         </item>
-        <item row="0" column="1">
+        <item row="1" column="1">
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
            <spacer name="NewChatSp1">
@@ -533,6 +533,13 @@
            </spacer>
           </item>
          </layout>
+        </item>
+        <item row="0" column="1">
+         <widget class="Line" name="line_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -1172,7 +1179,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
