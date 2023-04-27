@@ -1,7 +1,6 @@
 #ifndef DBWORKER_H
 #define DBWORKER_H
 
-#include "models.h"
 #include <QVariant>
 #include <QDebug>
 #include <QSqlDatabase>
@@ -11,7 +10,7 @@
 #include <QList>
 #include <singleton.h>
 //переключение режима, для запуска на винде или в докере
-#define DEBUG
+//#define DEBUG
 
 class DBWorker : public Singleton
 {
@@ -24,25 +23,22 @@ public:
     static void createDB();
     static void close();
 
-    // временный метод для проверки работоспособности
-    static void selectFromDB();
     static bool insertUser(QString login, QString password, QString email);
     static bool searchUser(QString login, QString password);
     static int getUserID(QString login, QString password);
     static void insertChat(int userID, QString name, QString description);
-    static QList<Chat*> selectUserChats(int userID);
+    static QMap<int, QString> selectUserChats(int userID);
     static void leaveChat(int userID, int chatID);
+    static void addUserChat(int userID, int chatID);
     static void removeChat(int chatID);
     static void insertMessage(int userID, int chatID, QString text);
     static QString selectMessages(int chatID);
-    // методы обращения к бд (сделать отдельные модели или списки для данных, которые возращаются)
-    // поиск пользователя по ID если нет вернуть false
-    // получение чатов определенного пользователя
-    // получение сообщений определенного чата
-    // добавление пользователя
-    // добавление сообщения в определенный чат
-    // добавление чата
-
+    static void insertInvite(int senderID, int receiverID, int ChatID);
+    static QString selectInvite(int userID);
+    static void updateInvite(int inviteID, bool answer);
+    static void removeUserChat(int userID, int chatID);
+    static void insertReport(int userID, QString text);
+    static QString selectReport();
 };
 
 
