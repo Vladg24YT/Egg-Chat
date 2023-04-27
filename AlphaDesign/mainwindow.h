@@ -5,6 +5,45 @@
 #include <QPixmap>
 #include <QDir>
 
+#include <QObject>
+#include <QTcpSocket>
+#include <vector>
+
+class server;
+class MainWindow;
+
+class destroyer{
+private:
+    server * p_instance;
+public:
+    ~destroyer() {delete p_instance;}
+    void init(server * p){ p_instance = p; };
+};
+
+class server : public QObject{
+    Q_OBJECT
+private:
+    static server * p_instance;
+    static destroyer destro;
+    QTcpSocket * socket;
+protected:
+    explicit server(QObject * parent = nullptr);
+    server(const server&) = delete;
+    server& operator = (server &) = delete;
+    //~server();
+    friend class destroyer;
+    friend class MainWindow;
+    MainWindow * ptr;
+    void parser(QString line);
+public:
+    static server * getInstance();
+    void signIn(QString login, QString password);
+private slots:
+    void readSocket();
+};
+
+
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -12,6 +51,7 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+    friend class server;
     bool mode = true; // false - login, true - reg
     bool emailChange = true, loginChange = true,
          passChange = true, newChatCreate = true, // false - chatting, true - creating new chat
@@ -58,6 +98,8 @@ private slots:
 
     void changeAccountStatus(bool newStatus);
 
+    void on_tabWidget_currentChanged(int index);
+
 private:
     void changeMode();
     void changePassMode();
@@ -66,4 +108,6 @@ private:
     Ui::MainWindow *ui;
     void createNewChat();
 };
+
+
 #endif // MAINWINDOW_H

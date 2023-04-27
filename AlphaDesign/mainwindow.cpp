@@ -2,10 +2,68 @@
 #include "ui_mainwindow.h"
 
 
+server::server(QObject *parent) : QObject(parent)
+{
+    socket = new QTcpSocket(this);
+    qDebug() << "123";
+    socket->connectToHost("95.165.152.146", 34197);
+    connect(socket, &QTcpSocket::readyRead,
+            this, &server::readSocket);
+}
+
+void server::parser(QString line)
+{
+    qDebug() << line;
+    std::vector<QString> words;
+    for (QString word : line.split("|")) words.push_back(word);
+    if (words.size() <= 0) return;
+
+    if (words[0] == "OK")
+        ptr->changeAccountStatus(true);
+    else if (words[0] == "BAD")
+        ptr->changeAccountStatus(false);
+    if (words[0] == "chatlist"){
+        for (QString word : words) qDebug() << word;
+        for (int i = 1; i < words.size(); i += 4){
+            ptr->ui->listWidget->addItem(words[i+2]);
+            ptr->ui->listWidget->item(ptr->ui->listWidget->count() - 1)->setToolTip(words[i]);
+        }
+    }
+}
+
+server *server::getInstance()
+{
+    if (!p_instance){
+        p_instance = new server();
+        destro.init(p_instance);
+    }
+    return p_instance;
+}
+
+void server::readSocket()
+{
+    QString msg = "";
+
+    while (socket->bytesAvailable() > 0){
+        msg.append(socket->readAll());
+    }
+
+    qDebug() << msg;
+    parser(msg);
+}
+
+server* server::p_instance;
+destroyer server::destro;
+
+
+
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    server::getInstance()->ptr = this;
+
     ui->setupUi(this);
     changeMode();
     changePassMode();
@@ -77,28 +135,25 @@ void MainWindow::changeLoginMode()
 void MainWindow::on_changeModeButton_clicked()
 {
     changeMode();
+
 }
 
 // пока пустышка
 void MainWindow::on_SignButton_clicked()
 {
-    qDebug() << "Типа проверяем данные об аккаунте";
-    if (!mode){
-        qDebug() << "User Authorization:";
-        qDebug() << "Login: " + ui->LoginLine->text();
-        qDebug() << "Password: " + ui->PassLine->text();
-    }
-    else{
-        qDebug() << "User Registration:";
-        qDebug() << "Login: " + ui->LoginLine->text();
-        qDebug() << "E-mail: " + ui->EmailLine->text();
-        qDebug() << "Password: " + ui->PassLine->text();
-        qDebug() << "Retyped password: " + ui->PassLine_2->text();
-    }
-    if (ui->checkBox->isChecked())
-        qDebug() << "We will never forget you!";
-
-    changeAccountStatus(true);
+    QString login = ui->LoginLine->text();
+    QString pass = ui->PassLine->text();
+    QString pass2 = ui->PassLine_2->text();
+    QString email = ui->EmailLine->text();
+    QString msg;
+    if (!mode)
+        msg = "login|" + login + "|" + pass;
+    else
+        if (pass == pass2)
+            msg = "reg|" + login + "|" + pass + "|" + email;
+        else
+            qDebug() << "pass 1 != pass 2!";
+    server::getInstance()->socket->write(msg.toUtf8());
 }
 
 
@@ -128,7 +183,7 @@ void MainWindow::on_checkBox_2_stateChanged(int arg1)
 
 void MainWindow::on_logoutBtn_clicked()
 {
-    qDebug() << "logout";
+    server::getInstance()->socket->write("logout");
     changeAccountStatus(false);
 }
 
@@ -234,6 +289,14 @@ void MainWindow::changeAccountStatus(bool newStatus)
     else{
         ui->tabWidget->setCurrentIndex(0);
         ui->tabWidget->setTabEnabled(0, true);
+    }
+}
+
+
+void MainWindow::on_tabWidget_currentChanged(int index)
+{
+    if (index == 1){
+        server::getInstance()->socket->write("chat|get");
     }
 }
 
