@@ -1,12 +1,11 @@
-#include "dbworker.h"
+#include <DBWorker.h>
 
 
 void DBWorker::open() {
-	// чтобы заставить работать этот код, нужно изменить переменную ниже на путь к файлу "sqlite.db"
 	QString path = "";
 #ifdef DEBUG
 	path = "C:/Users/rustv/Documents/QtProjects/Egg-Chat/ServerProject/";
-	qDebug() << "def DEBUG";
+	qDebug() << "DEBUG mode";
 #endif
 	db = QSqlDatabase::addDatabase("QSQLITE");
 	db.setDatabaseName(path + "sqlite.db");
@@ -19,19 +18,6 @@ void DBWorker::createDB() {
 }
 void DBWorker::close() {
 	if (db.isOpen()) db.close();
-}
-
-void DBWorker::selectFromDB() {
-	static QSqlQuery query = QSqlQuery(db);
-	query.exec("select * from chats");
-	try {
-		while (query.next()) {
-			QSqlRecord rec = query.record();
-			const int idIndex = rec.indexOf("id");
-			const int loginIndex = rec.indexOf("name");
-		}
-	}
-	catch (...) { qDebug() << "Виу-виу! Код красный - код не робит!"; }
 }
 
 bool DBWorker::insertUser(QString login, QString password, QString email)
@@ -80,21 +66,22 @@ void DBWorker::insertChat(int userID, QString name, QString description) {
 	query.addBindValue(description);
 	query.exec();
 }
-QList<Chat*> DBWorker::selectUserChats(int userID) {
-	static QSqlQuery query = QSqlQuery(db);
-	QList<Chat*> chats;
+QMap<int, QString> DBWorker::selectUserChats(int userID) {
+	QSqlQuery query = QSqlQuery(db);
+	QMap<int, QString> chats;
 	query.prepare("select chat_id, creator_id, name, description  from users_chats "
 		"join chats on chats.id = users_chats.chat_id where user_id = ?");
 	query.addBindValue(userID);
 	query.exec();
 	while (query.next()) {
+		QString response;
 		QSqlRecord rec = query.record();
-		Chat* chat = new Chat();
-		chat->id = query.value(0).toInt();
-		chat->creator_id = query.value(1).toInt();
-		chat->name = query.value(2).toString();
-		chat->decription = query.value(3).toString();
-		chats << chat;
+		int id = query.value(0).toInt();
+		response += query.value(0).toString() + '|';
+		response += query.value(1).toString() + '|';
+		response += query.value(2).toString() + '|';
+		response += query.value(3).toString() + '|';
+		chats.insert(id, response);
 	}
 	return chats;
 }
@@ -105,6 +92,13 @@ void DBWorker::leaveChat(int userID, int chatID) {
 	query.addBindValue(userID);
 	query.exec();
 }
+void DBWorker::addUserChat(int userID, int inviteID) {
+	QSqlQuery query = QSqlQuery(db);
+	query.prepare("insert into users_chats (user_id, chat_id, is_admin) VALUES ( ?, (select chat from invites where id = ?), 0)");
+	query.addBindValue(userID);
+	query.addBindValue(inviteID);
+	query.exec();
+}
 void DBWorker::removeChat(int chatID) {
 	QSqlQuery query = QSqlQuery(db);
 	query.prepare("delete from chats where id = ?");
@@ -112,10 +106,15 @@ void DBWorker::removeChat(int chatID) {
 	query.exec();
 }
 void DBWorker::insertMessage(int userID, int chatID, QString text) {
-
+	QSqlQuery query = QSqlQuery(db);
+	query.prepare("insert into messages (sender, chat, msg) VALUES ( ?, ?, ?)");
+	query.addBindValue(userID);
+	query.addBindValue(chatID);
+	query.addBindValue(text);
+	query.exec();
 }
 QString DBWorker::selectMessages(int chatID) {
-	static QSqlQuery query = QSqlQuery(db);
+	QSqlQuery query = QSqlQuery(db);
 	QString response;
 	query.prepare("select users.nickname, sendTime, msg from messages join users on users.id = sender where chat = ?");
 	query.addBindValue(chatID);
@@ -123,6 +122,59 @@ QString DBWorker::selectMessages(int chatID) {
 	while (query.next()) {
 		QSqlRecord rec = query.record();
 		response += query.value(0).toString() + query.value(1).toString() + query.value(2).toString() + "\n";
+	}
+	return response;
+}
+void DBWorker::insertInvite(int senderID, int receiverID, int ChatID) {
+	QSqlQuery query = QSqlQuery(db);
+	query.prepare("insert into invites (sender, receiver, chat, status) VALUES (?, ?, ?, 0)");
+	query.addBindValue(senderID);
+	query.addBindValue(receiverID);
+	query.addBindValue(ChatID);
+	query.exec();
+}
+QString DBWorker::selectInvite(int userID) {
+	QSqlQuery query = QSqlQuery(db);
+	QString response;
+	query.prepare("select sender, chat from messages where receiver = ?");
+	query.addBindValue(userID);
+	query.exec();
+	while (query.next()) {
+		QSqlRecord rec = query.record();
+		response += query.value(0).toString() + '|' + query.value(1).toString() + '|';
+	}
+	return response;
+}
+void DBWorker::updateInvite(int inviteID, bool answer) {
+	QSqlQuery query = QSqlQuery(db);
+	query.prepare("update invites set status = ? where id = ?");
+	query.addBindValue(answer);
+	query.addBindValue(inviteID);
+	query.exec();
+}
+void DBWorker::removeUserChat(int userID, int chatID) {
+	QSqlQuery query = QSqlQuery(db);
+	query.prepare("delete from users_chats where user_id = ? and chat_id = ?");
+	query.addBindValue(userID);
+	query.addBindValue(chatID);
+	query.exec();
+}
+void DBWorker::insertReport(int userID, QString text) {
+	QSqlQuery query = QSqlQuery(db);
+	query.prepare("insert into reports (user_id, decription) VALUES (?, ?)");
+	query.addBindValue(userID);
+	query.addBindValue(text);
+	query.exec();
+}
+QString DBWorker::selectReport(){
+	QSqlQuery query = QSqlQuery(db);
+	QString response;
+	query.prepare("select * from reports");
+	query.exec();
+	response += query.value(0).toString() + '|' + query.value(1).toString() + '|';
+	while (query.next()) {
+		QSqlRecord rec = query.record();
+		response += query.value(0).toString() + '|' + query.value(1).toString() + '|' + query.value(2).toString() + '|';
 	}
 	return response;
 }

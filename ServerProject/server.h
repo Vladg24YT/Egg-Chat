@@ -19,13 +19,12 @@ public:
 public slots:
     void slotNewConnection();
 //    void slotSend(QByteArray);
-    void slotMessage(QString, QString);
+    void slotMessage(int senderID, int chatID, QString message);
+    void slotKick(int, QString);
     void slotRemove(Client*);
 private:
     QTcpServer * TcpServer;
-    //QList<Client*> Clients;
     QMap<int, Client*> Clients;
-    int serverStatus;
 };
 
 #endif // SERVER_H

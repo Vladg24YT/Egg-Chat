@@ -14,49 +14,59 @@ public:
     explicit Client(QObject *parent = nullptr, QTcpSocket *socket = nullptr);
     ~Client();
     QTcpSocket *Socket;
-    static int num;
+    int GetID();
+    QList<int> Chats;
+    void Send(QString text);
 public slots:
     void Read();
     void OnClosing();
 signals:
-    void Message(QString chatID, QString text);
+    void Message(int userID, int chatID, QString text);
+    void Kick(int userID, QString command);
     void Close(Client*);
 private:
     int id;
     bool isAuth = false;
-    inline void send(QString text);
     ///
     /// \brief parser
     /// \param line
     ///
-    inline void parser(QString line);
+    void parser(QString line);
     /// Авторизация пользователя
     /// \brief auth
     /// \param login
     /// \param password
     /// \return true если пользователь найден, иначе false
     ///
-    inline void login(std::vector<QString>);
+    void login(std::vector<QString>);
     /// Регистрация пользователя
     /// \brief registration
     /// \param login
     /// \param password
     /// \return true если удалось зарегестрироваться, иначе false
     ///
-    inline void registration(std::vector<QString>);
+    void registration(std::vector<QString>);
     /// Метод выхода из учетной записи
     /// \brief logout
     ///
-    inline void logout();
-    inline void getMessage(std::vector<QString> words);
-    inline void getChats();
-    inline void createChat(std::vector<QString> words);
-    inline void leaveChat(std::vector<QString> words);
-    inline void removeChat(std::vector<QString> words);
-    inline void kickUser(int userID, int chatID);
-    inline void createInvite(int userID);
-    inline void ansewerInvite(int inviteID, bool answer);
-    inline void report(int userID, QString text);
+    void logout();
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="words"></param>
+    void getMessage(std::vector<QString> words);
+    void sendMessage(std::vector<QString> words);
+    void getChats();
+    void createChat(std::vector<QString> words);
+    void leaveChat(std::vector<QString> words);
+    void removeChat(std::vector<QString> words);
+    void sendInvite(std::vector<QString> words);
+    void getInvite(std::vector<QString> words);
+    void ansewerInvite(std::vector<QString> words);
+    void kickUser(std::vector<QString> words);
+    void sendReport(std::vector<QString> words);
+    void getReport();
+
 
 };
 #endif // CLIENT_H
