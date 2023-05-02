@@ -469,7 +469,7 @@
        <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="AuthTab">
        <attribute name="title">
@@ -499,7 +499,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Login</string>
+             <string>Логин:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -532,7 +532,7 @@
              </font>
             </property>
             <property name="text">
-             <string>E-mail</string>
+             <string>E-mail:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -565,7 +565,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Password</string>
+             <string>Пароль:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -604,7 +604,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Retype password</string>
+             <string>Повторите пароль:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -649,7 +649,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Sign Up</string>
+             <string>Войти</string>
             </property>
            </widget>
           </item>
@@ -667,7 +667,7 @@
              </font>
             </property>
             <property name="text">
-             <string>I already have an account</string>
+             <string>У меня ещё нет аккаунта</string>
             </property>
            </widget>
           </item>
@@ -679,7 +679,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Don't forget me pls :3</string>
+             <string>Запомните меня пж :3</string>
             </property>
            </widget>
           </item>
@@ -1658,7 +1658,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

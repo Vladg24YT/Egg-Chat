@@ -65,39 +65,22 @@ public:
 
 private slots:
     void on_changeModeButton_clicked();
-
     void on_SignButton_clicked();
-
     void on_ChangePassBtn_clicked();
-
     void on_ChangeEmailBtn_clicked();
-
     void on_changeLoginBtn_clicked();
-
     void on_checkBox_2_stateChanged(int arg1);
-
     void on_logoutBtn_clicked();
-
     void on_listWidget_itemSelectionChanged();
-
     void changeChatMode();
-
     void on_pushButton_clicked();
-
     void on_CreateNewChat_clicked();
-
     void on_InviteUserBtn_clicked();
-
     void on_leaveChatBtn_clicked();
-
     void changeInvUserMode();
-
     void on_InvUserBtn_clicked();
-
     void on_ChatLine_returnPressed();
-
     void changeAccountStatus(bool newStatus);
-
     void on_tabWidget_currentChanged(int index);
 
 private:
@@ -105,8 +88,10 @@ private:
     void changePassMode();
     void changeEmailMode();
     void changeLoginMode();
-    Ui::MainWindow *ui;
     void createNewChat();
+    void setLoginTabEnable(bool setTo);
+
+    Ui::MainWindow *ui;
 };
 
 

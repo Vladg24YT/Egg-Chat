@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-
 server::server(QObject *parent) : QObject(parent)
 {
     socket = new QTcpSocket(this);
@@ -20,8 +19,10 @@ void server::parser(QString line)
 
     if (words[0] == "OK")
         ptr->changeAccountStatus(true);
-    else if (words[0] == "BAD")
+    else if (words[0] == "BAD"){
         ptr->changeAccountStatus(false);
+        ptr->setLoginTabEnable(true);
+    }
     if (words[0] == "chatlist"){
         for (QString word : words) qDebug() << word;
         for (int i = 1; i < words.size(); i += 4){
@@ -80,6 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    server::getInstance()->socket->close();
 }
 
 void MainWindow::changeMode()
@@ -92,12 +94,12 @@ void MainWindow::changeMode()
     ui->PassLine_2->setVisible(mode);
 
     if (mode){
-        ui->SignButton->setText("Sign Up");
-        ui->changeModeButton->setText("I already have an account");
+        ui->SignButton->setText("Зарегистрироваться");
+        ui->changeModeButton->setText("У меня уже есть аккаунт");
     }
     else{
-        ui->SignButton->setText("Sign In");
-        ui->changeModeButton->setText("I don't have an account");
+        ui->SignButton->setText("Войти");
+        ui->changeModeButton->setText("У меня ещё нет аккаунта");
     }
 }
 
@@ -146,14 +148,21 @@ void MainWindow::on_SignButton_clicked()
     QString pass2 = ui->PassLine_2->text();
     QString email = ui->EmailLine->text();
     QString msg;
-    if (!mode)
-        msg = "login|" + login + "|" + pass;
-    else
-        if (pass == pass2)
+
+    if (mode)
+        if (pass == pass2){
             msg = "reg|" + login + "|" + pass + "|" + email;
-        else
+            server::getInstance()->socket->write(msg.toUtf8());
+        }
+        else{
             qDebug() << "pass 1 != pass 2!";
-    server::getInstance()->socket->write(msg.toUtf8());
+            setLoginTabEnable(true);
+        }
+    else if (login != "" && pass != ""){
+           msg = "login|" + login + "|" + pass;
+           server::getInstance()->socket->write(msg.toUtf8());
+        }
+    else setLoginTabEnable(true);
 }
 
 
@@ -184,6 +193,7 @@ void MainWindow::on_checkBox_2_stateChanged(int arg1)
 void MainWindow::on_logoutBtn_clicked()
 {
     server::getInstance()->socket->write("logout");
+    setLoginTabEnable(true);
     changeAccountStatus(false);
 }
 
@@ -227,6 +237,17 @@ void MainWindow::createNewChat(){
 
     ui->listWidget->addItem(ui->NewChatNameLine->text());
     qDebug() << "New chat created";
+}
+
+void MainWindow::setLoginTabEnable(bool setTo)
+{
+    ui->LoginLine->setEnabled(setTo);
+    ui->EmailLine->setEnabled(setTo);
+    ui->PassLine->setEnabled(setTo);
+    ui->PassLine_2->setEnabled(setTo);
+    ui->SignButton->setEnabled(setTo);
+    ui->changeModeButton->setEnabled(setTo);
+    ui->checkBox->setEnabled(setTo);
 }
 
 void MainWindow::on_pushButton_clicked()
