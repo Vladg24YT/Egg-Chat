@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QPixmap>
 #include <QDir>
-
+#include <QFile>
 #include <QObject>
 #include <QTcpSocket>
 #include <vector>
@@ -57,11 +57,14 @@ class MainWindow : public QMainWindow
          passChange = true, newChatCreate = true, // false - chatting, true - creating new chat
          invNewUserMode = true,
          loginedUser = false; // вошел ли юзер в аккаунт
-
+    bool autoLog = false;
+    QString loginAuto, passAuto;
 
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    void readData();
 
 private slots:
     void on_changeModeButton_clicked();

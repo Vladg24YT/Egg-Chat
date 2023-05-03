@@ -76,6 +76,7 @@ MainWindow::MainWindow(QWidget *parent)
     changeAccountStatus(false);
     // потом удалить
     ui->NotifList->addItem("Здесь будут приглашения в чаты. Но пока тут ничего нет...");
+//    readData();
 }
 
 MainWindow::~MainWindow()
@@ -143,6 +144,7 @@ void MainWindow::on_changeModeButton_clicked()
 // пока пустышка
 void MainWindow::on_SignButton_clicked()
 {
+    setLoginTabEnable(false);
     QString login = ui->LoginLine->text();
     QString pass = ui->PassLine->text();
     QString pass2 = ui->PassLine_2->text();
@@ -248,6 +250,30 @@ void MainWindow::setLoginTabEnable(bool setTo)
     ui->SignButton->setEnabled(setTo);
     ui->changeModeButton->setEnabled(setTo);
     ui->checkBox->setEnabled(setTo);
+}
+
+void MainWindow::readData()
+{
+    QFile file("C:/users/Public/Qlient/data.txt");
+    if (!file.open((QIODevice::ReadWrite | QIODevice::Text))){
+        file.close();
+    }
+    else{
+        std::vector<QString> lines;
+        QString in = file.readAll();
+        for (QString line : in.split("\n")) lines.push_back(line);
+
+        if (lines.size() == 3){
+            if (lines[0] == "1"){
+                if (lines[1] != "" && lines[2] != "")
+                {
+                    ui->LoginLine->setText(lines[1]);
+                    ui->PassLine->setText(lines[2]);
+                    this->on_SignButton_clicked();
+                }
+            }
+        }
+    }
 }
 
 void MainWindow::on_pushButton_clicked()
