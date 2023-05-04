@@ -23,13 +23,13 @@ void server::parser(QString line)
         ptr->changeAccountStatus(false);
         ptr->setLoginTabEnable(true);
     }
-    if (words[0] == "chatlist"){
+    if (words[0] == "chatlist" and words.size() >= 5){
         for (int i = 1; i < words.size(); i += 4){
             ptr->ui->listWidget->addItem(words[i+2]);
             ptr->ui->listWidget->item(ptr->ui->listWidget->count() - 1)->setToolTip(words[i]);
         }
     }
-    if (words[0] == "messagelist"){
+    if (words[0] == "messagelist" and words.size() >= 4){
         for (QString word : words) qDebug() << word;
 
         for (int i = 1; i < words.size(); i += 3){
@@ -39,6 +39,9 @@ void server::parser(QString line)
             qDebug() << msg.show();
             ptr->ui->ChatBrowser->append(msg.show());
         }
+    }
+    if (words[0] == "message" and words.size() >= 5){
+        ptr->chats[words[2]].addMessage(message(words[1], words[3], words[4]));
     }
 }
 
@@ -59,7 +62,6 @@ void server::readSocket()
         msg.append(socket->readAll());
     }
 
-    qDebug() << msg;
     parser(msg);
 }
 
