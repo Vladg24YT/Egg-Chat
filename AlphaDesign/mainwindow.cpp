@@ -24,10 +24,20 @@ void server::parser(QString line)
         ptr->setLoginTabEnable(true);
     }
     if (words[0] == "chatlist"){
-        for (QString word : words) qDebug() << word;
         for (int i = 1; i < words.size(); i += 4){
             ptr->ui->listWidget->addItem(words[i+2]);
             ptr->ui->listWidget->item(ptr->ui->listWidget->count() - 1)->setToolTip(words[i]);
+        }
+    }
+    if (words[0] == "messagelist"){
+        for (QString word : words) qDebug() << word;
+
+        for (int i = 1; i < words.size(); i += 3){
+            ptr->chats[ptr->currentChat].addMessage(message(words[i], words[i+2], words[i+1]));
+        }
+        for (message msg : ptr->chats[ptr->currentChat].msgs){
+            qDebug() << msg.show();
+            ptr->ui->ChatBrowser->append(msg.show());
         }
     }
 }
@@ -189,8 +199,10 @@ void MainWindow::on_changeLoginBtn_clicked()
 void MainWindow::on_checkBox_2_stateChanged(int arg1)
 {
     qDebug() << "Theme change";
+    /*
+     * Надо делать через QPallete
+    */
 }
-
 
 void MainWindow::on_logoutBtn_clicked()
 {
@@ -202,7 +214,19 @@ void MainWindow::on_logoutBtn_clicked()
 
 void MainWindow::on_listWidget_itemSelectionChanged()
 {
-    qDebug() << ui->listWidget->currentIndex();
+    QString currentChatInd =  ui->listWidget->currentItem()->toolTip();
+    ui->ChatBrowser->clear();
+    this->currentChat = currentChatInd;
+    if (chats.count(currentChatInd)){
+        // выводим все сообщения в chatBrowser
+        for (int i = 0; i < chats[currentChatInd].msgs.size(); i++)
+            ui->ChatBrowser->append(chats[currentChatInd].msgs[i].show());
+    }
+    else{
+        // запрос сообщений + вывод в chatBrowser
+        QString msg = "message|get|" + currentChatInd;
+        server::getInstance()->socket->write(msg.toUtf8());
+    }
 }
 
 void MainWindow::changeChatMode()
@@ -318,7 +342,11 @@ void MainWindow::on_InvUserBtn_clicked()
 
 void MainWindow::on_ChatLine_returnPressed()
 {
-    ui->ChatBrowser->append(ui->ChatLine->text());
+    //ui->ChatBrowser->append(ui->ChatLine->text());
+    //
+    QString msg = "message|send|" + currentChat + "|" + ui->ChatLine->text();
+    chats[currentChat].msgs.clear();
+    server::getInstance()->socket->write(msg.toUtf8());
     ui->ChatLine->clear();
 }
 

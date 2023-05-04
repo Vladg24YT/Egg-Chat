@@ -9,6 +9,8 @@
 #include <QTcpSocket>
 #include <vector>
 
+#include "chat.h"
+
 class server;
 class MainWindow;
 
@@ -87,6 +89,8 @@ private slots:
     void on_tabWidget_currentChanged(int index);
 
 private:
+    QMap<QString, chat> chats;
+    QString currentChat;
     void changeMode();
     void changePassMode();
     void changeEmailMode();
