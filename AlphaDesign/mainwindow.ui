@@ -469,7 +469,7 @@
        <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="AuthTab">
        <attribute name="title">
@@ -681,6 +681,9 @@
             <property name="text">
              <string>Запомните меня пж :3</string>
             </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -806,11 +809,14 @@
               <pointsize>11</pointsize>
              </font>
             </property>
+            <property name="text">
+             <string/>
+            </property>
             <property name="maxLength">
              <number>64</number>
             </property>
             <property name="placeholderText">
-             <string>ID-Пользователя</string>
+             <string>Логин пользователя</string>
             </property>
            </widget>
           </item>

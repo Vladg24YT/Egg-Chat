@@ -9,6 +9,7 @@
 #include <QTcpSocket>
 #include <vector>
 
+
 #include "chat.h"
 
 class server;
@@ -28,6 +29,7 @@ private:
     static server * p_instance;
     static destroyer destro;
     QTcpSocket * socket;
+
 protected:
     explicit server(QObject * parent = nullptr);
     server(const server&) = delete;
@@ -67,6 +69,7 @@ public:
     ~MainWindow();
 
     void readData();
+    void writeData(int stat);
 
 private slots:
     void on_changeModeButton_clicked();

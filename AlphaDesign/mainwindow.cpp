@@ -46,6 +46,8 @@ void server::parser(QString line)
         if (ptr->currentChat == words[2])
             ptr->ui->ChatBrowser->append(nm.show());
     }
+
+
 }
 
 server *server::getInstance()
@@ -87,11 +89,12 @@ MainWindow::MainWindow(QWidget *parent)
     changeLoginMode();
     changeChatMode();
     changeInvUserMode();
-
     changeAccountStatus(false);
+
+
     // потом удалить
-    ui->NotifList->addItem("Здесь будут приглашения в чаты. Но пока тут ничего нет...");
-//    readData();
+    //ui->NotifList->addItem("Здесь будут приглашения в чаты. Но пока тут ничего нет...");
+    readData();
 }
 
 MainWindow::~MainWindow()
@@ -156,7 +159,6 @@ void MainWindow::on_changeModeButton_clicked()
 
 }
 
-// пока пустышка
 void MainWindow::on_SignButton_clicked()
 {
     setLoginTabEnable(false);
@@ -178,6 +180,12 @@ void MainWindow::on_SignButton_clicked()
     else if (login != "" && pass != ""){
            msg = "login|" + login + "|" + pass;
            server::getInstance()->socket->write(msg.toUtf8());
+           if(ui->checkBox->isChecked()){
+               writeData(1);
+           }
+           else{
+               writeData(0);
+           }
         }
     else setLoginTabEnable(true);
 }
@@ -302,6 +310,21 @@ void MainWindow::readData()
                 }
             }
         }
+        file.close();
+    }
+}
+
+void MainWindow::writeData(int stat)
+{
+    QFile file("C:/users/Public/Qlient/data.txt");
+    if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
+        file.close();
+    else{
+        file.Truncate;
+        QString dt = QString::number(stat) + "\n" + ui->LoginLine->text() + "\n" + ui->PassLine->text();
+        qDebug() << dt;
+        file.write(dt.toUtf8());
+        file.close();
     }
 }
 
@@ -340,7 +363,12 @@ void MainWindow::changeInvUserMode()
 
 void MainWindow::on_InvUserBtn_clicked()
 {
-    ui->ChatBrowser->append("Вы добавили нового пользователя " + ui->InvUserIDLine->text());
+    if (ui->InvUserIDLine->text() != "" and currentChat != ""){
+        QString msg = "invite|send|" + ui->InvUserIDLine->text() + "|" + currentChat;
+        qDebug() << msg;
+        server::getInstance()->socket->write(msg.toUtf8());
+        ui->InvUserIDLine->clear();
+    }
     changeInvUserMode();
 }
 
@@ -372,6 +400,7 @@ void MainWindow::changeAccountStatus(bool newStatus)
 
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
+    //qDebug() << index;
     if (index == 1){
         server::getInstance()->socket->write("chat|get");
     }
