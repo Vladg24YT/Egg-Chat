@@ -11,7 +11,6 @@ void DBWorker::open() {
 	db.setDatabaseName(path + "sqlite.db");
 	if (!db.open()) qDebug() << db.lastError().text();
 }
-
 void DBWorker::createDB() {
 	getInstance();
 	if (!db.isOpen()) open();
@@ -19,9 +18,17 @@ void DBWorker::createDB() {
 void DBWorker::close() {
 	if (db.isOpen()) db.close();
 }
-
-bool DBWorker::insertUser(QString login, QString password, QString email)
-{
+QString DBWorker::getUserNickname(int userID){
+	QSqlQuery query = QSqlQuery(db);
+	query.prepare("select nickname from users where id = ?");
+	query.addBindValue(userID);
+	query.exec();
+	while (query.next()) {
+		QSqlRecord rec = query.record();
+		return query.value(0).toString();
+	}
+}
+bool DBWorker::insertUser(QString login, QString password, QString email){
 	QSqlQuery query = QSqlQuery(db);
 	query.prepare("insert into users (login, password, nickname, email) values (?, ?, ?, ?) ");
 	query.addBindValue(login);
@@ -31,7 +38,6 @@ bool DBWorker::insertUser(QString login, QString password, QString email)
 	query.exec();
 	return !query.lastError().isValid();
 }
-
 bool DBWorker::searchUser(QString login, QString password) {
 	QSqlQuery query = QSqlQuery(db);
 	query.prepare("select * from users where login = ? and password = ?");
@@ -41,8 +47,6 @@ bool DBWorker::searchUser(QString login, QString password) {
 	bool isExist = false;
 	while (query.next()) {
 		isExist = true;
-		QSqlRecord rec = query.record();
-		const int idIndex = rec.indexOf("id");
 	}
 	return isExist;
 }
@@ -54,9 +58,9 @@ int DBWorker::getUserID(QString login, QString password) {
 	query.exec();
 	while (query.next()) {
 		QSqlRecord rec = query.record();
-		const int idIndex = rec.indexOf("id");
-		return query.value(idIndex).toInt();
+		return query.value(0).toInt();
 	}
+	return 0;
 }
 void DBWorker::insertChat(int userID, QString name, QString description) {
 	QSqlQuery query = QSqlQuery(db);
@@ -80,7 +84,7 @@ QMap<int, QString> DBWorker::selectUserChats(int userID) {
 		response += query.value(0).toString() + '|';
 		response += query.value(1).toString() + '|';
 		response += query.value(2).toString() + '|';
-		response += query.value(3).toString() + '|';
+		response += query.value(3).toString();
 		chats.insert(id, response);
 	}
 	return chats;
@@ -121,27 +125,28 @@ QString DBWorker::selectMessages(int chatID) {
 	query.exec();
 	while (query.next()) {
 		QSqlRecord rec = query.record();
-		response += query.value(0).toString() + query.value(1).toString() + query.value(2).toString() + "\n";
+		response += query.value(0).toString() + '|' + query.value(1).toString() + '|' + query.value(2).toString() + '|';
 	}
+	response.chop(1);
 	return response;
 }
-void DBWorker::insertInvite(int senderID, int receiverID, int ChatID) {
+void DBWorker::insertInvite(int senderID, QString receiver, int ChatID) {
 	QSqlQuery query = QSqlQuery(db);
-	query.prepare("insert into invites (sender, receiver, chat, status) VALUES (?, ?, ?, 0)");
+	query.prepare("insert into invites (sender, receiver, chat, status) VALUES (?, (select id from users where login = ?), ?, 0)");
+	query.addBindValue(receiver);
 	query.addBindValue(senderID);
-	query.addBindValue(receiverID);
 	query.addBindValue(ChatID);
 	query.exec();
 }
 QString DBWorker::selectInvite(int userID) {
 	QSqlQuery query = QSqlQuery(db);
 	QString response;
-	query.prepare("select sender, chat from messages where receiver = ?");
+	query.prepare("select id, sender, chat from messages where receiver = ?");
 	query.addBindValue(userID);
 	query.exec();
 	while (query.next()) {
 		QSqlRecord rec = query.record();
-		response += query.value(0).toString() + '|' + query.value(1).toString() + '|';
+		response += query.value(0).toString() + '|' + query.value(1).toString() + '|' + query.value(2).toString() + '|';
 	}
 	return response;
 }
@@ -166,15 +171,15 @@ void DBWorker::insertReport(int userID, QString text) {
 	query.addBindValue(text);
 	query.exec();
 }
-QString DBWorker::selectReport(){
+QString DBWorker::selectReport() {
 	QSqlQuery query = QSqlQuery(db);
 	QString response;
 	query.prepare("select * from reports");
 	query.exec();
-	response += query.value(0).toString() + '|' + query.value(1).toString() + '|';
 	while (query.next()) {
 		QSqlRecord rec = query.record();
-		response += query.value(0).toString() + '|' + query.value(1).toString() + '|' + query.value(2).toString() + '|';
+		response += query.value(0).toString() + '|' + query.value(1).toString() + '|' + query.value(2).toString();
+		if (!query.last()) response += '|';
 	}
 	return response;
 }
