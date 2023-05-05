@@ -55,6 +55,7 @@ var menudata={children:[
 {text:"s",url:"functions_func.html#index_s"},
 {text:"u",url:"functions_func.html#index_u"},
 {text:"~",url:"functions_func.html#index__7E"}]},
-{text:"Переменные",url:"functions_vars.html"}]}]},
+{text:"Переменные",url:"functions_vars.html"},
+{text:"Относящиеся к классу функции",url:"functions_rela.html"}]}]},
 {text:"Файлы",url:"files.html",children:[
 {text:"Файлы",url:"files.html"}]}]}

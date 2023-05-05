@@ -98,8 +98,9 @@ public:
 	/// Метод получения сообщений чата
 	/// </summary>
 	/// <param name="chatID">- ID чата</param>
+	/// <param name="limit">- максимально возращаемое количество записей</param>
 	/// <returns>Возвращает строку со всеми сообщения содержащую отправителя, время и текст сообщения</returns>
-	static QString selectMessages(int chatID);
+	static QString selectMessages(int chatID, int limit = 50);
 	/// <summary>
 	/// Метод добавления приглашения.
 	/// </summary>

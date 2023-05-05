@@ -27,6 +27,7 @@ QString DBWorker::getUserNickname(int userID){
 		QSqlRecord rec = query.record();
 		return query.value(0).toString();
 	}
+	return "";
 }
 bool DBWorker::insertUser(QString login, QString password, QString email){
 	QSqlQuery query = QSqlQuery(db);
@@ -117,11 +118,12 @@ void DBWorker::insertMessage(int userID, int chatID, QString text) {
 	query.addBindValue(text);
 	query.exec();
 }
-QString DBWorker::selectMessages(int chatID) {
+QString DBWorker::selectMessages(int chatID, int limit) {
 	QSqlQuery query = QSqlQuery(db);
 	QString response;
-	query.prepare("select users.nickname, sendTime, msg from messages join users on users.id = sender where chat = ?");
+	query.prepare("select users.nickname, sendTime, msg from (select * from messages where chat = ? order by messages.id desc limit ?) join users on users.id = sender order by sendTime");
 	query.addBindValue(chatID);
+	query.addBindValue(limit);
 	query.exec();
 	while (query.next()) {
 		QSqlRecord rec = query.record();
@@ -146,7 +148,8 @@ QString DBWorker::selectInvite(int userID) {
 	query.exec();
 	while (query.next()) {
 		QSqlRecord rec = query.record();
-		response += query.value(0).toString() + '|' + query.value(1).toString() + '|' + query.value(2).toString() + '|';
+		response += query.value(0).toString() + '|' + query.value(1).toString() + '|' + query.value(2).toString();
+		if (!query.last()) response += '|';
 	}
 	return response;
 }

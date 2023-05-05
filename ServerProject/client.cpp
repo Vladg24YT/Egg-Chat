@@ -90,13 +90,13 @@ void Client::createChat(std::vector<QString> words) {
 	return Send("Invalid chat command!");
 }
 void Client::leaveChat(std::vector<QString> words) {
-	if (words.size() == 4)
-		if (words[2] != "") return DBWorker::leaveChat(id, words[3].toInt());
+	if (words.size() == 3)
+		if (words[2] != "") return DBWorker::leaveChat(id, words[2].toInt());
 	return Send("Invalid chat command!");
 }
 void Client::removeChat(std::vector<QString> words) {
 	if (words.size() == 3)
-		if (words[2] != "") return DBWorker::removeChat(words[3].toInt());
+		if (words[2] != "") return DBWorker::removeChat(words[2].toInt());
 	return Send("Invalid chat command!");
 }
 void Client::sendInvite(std::vector<QString> words) {
@@ -105,19 +105,19 @@ void Client::sendInvite(std::vector<QString> words) {
 	return Send("Invalid invite command!");
 }
 void Client::getInvite(std::vector<QString> words) {
-	if (words.size() == 2) {
-		QString response = "invitelist|" + DBWorker::selectInvite(id);
-		response.remove(response.size() - 1, 1);
-		Send(response);
-	};
+	if (words.size() == 3)
+		if (words[2] != "") {
+			QString response = "invitelist|" + DBWorker::selectInvite(id);
+			Send(response);
+		};
 	Send("Invalid chat command!");
 }
 void Client::ansewerInvite(std::vector<QString> words) {
-	if (words.size() == 4)
-		if (words[3] != "" && words[4] != "") {
+	if (words.size() == 5)
+		if (words[2] != "" && words[3] != "" && words[4] != "") {
 			bool answer = words[4].toInt();
 			if (answer) DBWorker::addUserChat(id, words[3].toInt());
-			return DBWorker::updateInvite(words[3].toInt(), answer);
+			return DBWorker::updateInvite(words[2].toInt(), answer);
 		}
 	return Send("Invalid invite command!");
 }
@@ -132,12 +132,11 @@ void Client::kickUser(std::vector<QString> words) {
 }
 void Client::sendReport(std::vector<QString> words) {
 	if (words.size() == 4)
-		if (words[3] != "" && words[4] != "") return DBWorker::insertReport(words[3].toInt(), words[4]);
+		if (words[2] != "" && words[3] != "") return DBWorker::insertReport(words[2].toInt(), words[3]);
 	return Send("Invalid report command!");
 }
 void Client::getReport() {
 	QString response = "reportlist|" + DBWorker::selectReport();
-	response.remove(response.size() - 1, 1);
 	Send(response);
 }
 void Client::getChats() {
@@ -156,7 +155,7 @@ void Client::Send(QString text) {
 	Socket->write(text.toUtf8());
 }
 void Client::logout() {
-	qDebug() << id << " logout";
+	qDebug() << "[SERVER]" << id << "logout";
 	isAuth = false;
 	id = 0;
 }
@@ -173,17 +172,11 @@ void Client::sendMessage(std::vector<QString> words) {
 	if (words.size() == 4)
 		if (words[2] != "" && words[3] != "") {
 			DBWorker::insertMessage(id, words[2].toInt(), words[3]);
-
 			return emit Message(DBWorker::getUserNickname(id), words[2].toInt(), words[3]);
 		}
 	return Send("Invalid message command!");
 }
-void Client::OnClosing() {
-	emit Close(this);
-}
-Client::~Client() {
-	Socket->close();
-}
+Client::~Client() { Socket->close(); }
+void Client::OnClosing() { emit Close(this); }
 int Client::GetID() { return id; }
-
 int Client::GetDescriptor() { return descriptor; }
