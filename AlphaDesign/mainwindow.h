@@ -93,6 +93,7 @@ private slots:
     void on_tabWidget_currentChanged(int index);
 
 private:
+    QString homeDir;
     QMap<QString, chat> chats;
     QMap<QString, invite> invites;
     QString currentChat;

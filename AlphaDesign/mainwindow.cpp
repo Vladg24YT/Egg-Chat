@@ -103,6 +103,7 @@ MainWindow::MainWindow(QWidget *parent)
     changeInvUserMode();
     changeAccountStatus(false);
 
+    homeDir = QDir::homePath() + "/Qlient";
 
     // потом удалить
     //ui->NotifList->addItem("Здесь будут приглашения в чаты. Но пока тут ничего нет...");
@@ -303,7 +304,9 @@ void MainWindow::setLoginTabEnable(bool setTo)
 
 void MainWindow::readData()
 {
-    QFile file("C:/users/Public/Qlient/data.txt");
+    /*для корректной работы должна быть предварительно
+    создана папка Qlient в домашней папке пользователя*/
+    QFile file(homeDir + "/data.txt");
     if (!file.open((QIODevice::ReadWrite | QIODevice::Text))){
         file.close();
     }
@@ -328,7 +331,7 @@ void MainWindow::readData()
 
 void MainWindow::writeData(int stat)
 {
-    QFile file("C:/users/Public/Qlient/data.txt");
+    QFile file(homeDir + "/data.txt");
     if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
         file.close();
     else{
