@@ -469,11 +469,11 @@
        <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="AuthTab">
        <attribute name="title">
-        <string>Auth</string>
+        <string>Авторизация</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
@@ -705,7 +705,7 @@
       </widget>
       <widget class="QWidget" name="ChatsTab">
        <attribute name="title">
-        <string>Chats</string>
+        <string>Чаты</string>
        </attribute>
        <layout class="QFormLayout" name="formLayout">
         <item row="1" column="0">
@@ -1039,7 +1039,7 @@
       </widget>
       <widget class="QWidget" name="AccountTab">
        <attribute name="title">
-        <string>Account</string>
+        <string>Аккаунт</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
@@ -1520,7 +1520,7 @@
       </widget>
       <widget class="QWidget" name="NotificationTab">
        <attribute name="title">
-        <string>Notifications</string>
+        <string>Приглашения</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
@@ -1560,7 +1560,7 @@
       </widget>
       <widget class="QWidget" name="SettingsTab">
        <attribute name="title">
-        <string>Settings</string>
+        <string>Настройки</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>

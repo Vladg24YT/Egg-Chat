@@ -11,6 +11,7 @@
 
 
 #include "chat.h"
+#include "invite.h"
 
 class server;
 class MainWindow;
@@ -93,6 +94,7 @@ private slots:
 
 private:
     QMap<QString, chat> chats;
+    QMap<QString, invite> invites;
     QString currentChat;
     void changeMode();
     void changePassMode();

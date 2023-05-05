@@ -5,9 +5,17 @@
 
 class invite
 {
+private:
+    QString chatName;
+    QString chatID;
+    QString inviterName;
+    QString ID;
 public:
     invite();
-    //invite();
+    invite(QString invID, QString chat, QString chat_id, QString inviter);
+
+    QString toString();
+    QString answer(bool answer); // true - accept, false - decline
 };
 
 #endif // INVITE_H

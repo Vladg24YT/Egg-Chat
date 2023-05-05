@@ -17,11 +17,16 @@ void server::parser(QString line)
     for (QString word : line.split("|")) words.push_back(word);
     if (words.size() <= 0) return;
 
-    if (words[0] == "OK")
-        ptr->changeAccountStatus(true);
-    else if (words[0] == "BAD"){
-        ptr->changeAccountStatus(false);
-        ptr->setLoginTabEnable(true);
+    if (!ptr->loginedUser)
+    {
+        if (words[0] == "OK"){
+            ptr->writeData(ptr->ui->checkBox->isChecked() ? 1 : 0);
+            ptr->changeAccountStatus(true);
+        }
+        else if (words[0] == "BAD"){
+            ptr->changeAccountStatus(false);
+            ptr->setLoginTabEnable(true);
+        }
     }
     if (words[0] == "chatlist" and words.size() >= 5){
         ptr->ui->listWidget->clear();
@@ -30,7 +35,7 @@ void server::parser(QString line)
             ptr->ui->listWidget->item(ptr->ui->listWidget->count() - 1)->setToolTip(words[i]);
         }
     }
-    if (words[0] == "messagelist" and words.size() >= 4){
+    else if (words[0] == "messagelist" and words.size() >= 4){
 
         for (int i = 1; i < words.size(); i += 3){
             ptr->chats[ptr->currentChat].addMessage(message(words[i], words[i+2], words[i+1]));
@@ -40,13 +45,20 @@ void server::parser(QString line)
             ptr->ui->ChatBrowser->append(msg.show());
         }
     }
-    if (words[0] == "message" and words.size() >= 5){
+    else if (words[0] == "message" and words.size() >= 5){
         message nm = message(words[1], words[3], words[4]);
         ptr->chats[words[2]].addMessage(nm);
         if (ptr->currentChat == words[2])
             ptr->ui->ChatBrowser->append(nm.show());
     }
-
+    // заглушка на получения списка приглосов
+    else if (words[0] == "invitelist"){
+        qDebug () << line;
+    }
+    // заглушка на получение нового приглашения
+    else if (words[0] == "invite"){
+        qDebug() << line;
+    }
 
 }
 
@@ -180,12 +192,12 @@ void MainWindow::on_SignButton_clicked()
     else if (login != "" && pass != ""){
            msg = "login|" + login + "|" + pass;
            server::getInstance()->socket->write(msg.toUtf8());
-           if(ui->checkBox->isChecked()){
-               writeData(1);
-           }
-           else{
-               writeData(0);
-           }
+//           if(ui->checkBox->isChecked()){
+//               writeData(1);
+//           }
+//           else{
+//               writeData(0);
+//           }
         }
     else setLoginTabEnable(true);
 }
