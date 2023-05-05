@@ -24,24 +24,27 @@ void server::parser(QString line)
         ptr->setLoginTabEnable(true);
     }
     if (words[0] == "chatlist" and words.size() >= 5){
+        ptr->ui->listWidget->clear();
         for (int i = 1; i < words.size(); i += 4){
             ptr->ui->listWidget->addItem(words[i+2]);
             ptr->ui->listWidget->item(ptr->ui->listWidget->count() - 1)->setToolTip(words[i]);
         }
     }
     if (words[0] == "messagelist" and words.size() >= 4){
-        for (QString word : words) qDebug() << word;
 
         for (int i = 1; i < words.size(); i += 3){
             ptr->chats[ptr->currentChat].addMessage(message(words[i], words[i+2], words[i+1]));
         }
         for (message msg : ptr->chats[ptr->currentChat].msgs){
-            qDebug() << msg.show();
+            //qDebug() << msg.show();
             ptr->ui->ChatBrowser->append(msg.show());
         }
     }
     if (words[0] == "message" and words.size() >= 5){
-        ptr->chats[words[2]].addMessage(message(words[1], words[3], words[4]));
+        message nm = message(words[1], words[3], words[4]);
+        ptr->chats[words[2]].addMessage(nm);
+        if (ptr->currentChat == words[2])
+            ptr->ui->ChatBrowser->append(nm.show());
     }
 }
 
@@ -344,10 +347,7 @@ void MainWindow::on_InvUserBtn_clicked()
 
 void MainWindow::on_ChatLine_returnPressed()
 {
-    //ui->ChatBrowser->append(ui->ChatLine->text());
-    //
     QString msg = "message|send|" + currentChat + "|" + ui->ChatLine->text();
-    chats[currentChat].msgs.clear();
     server::getInstance()->socket->write(msg.toUtf8());
     ui->ChatLine->clear();
 }
