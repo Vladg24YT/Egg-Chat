@@ -22,6 +22,6 @@ QString invite::answer(bool answer)
     QString str;
     QString ans = answer ? "1" : "0";
     // пока так, ибо не помню какой должен быть ответ
-    str = "invite|answer|" + ID + "|" + ans;
+    str = "invite|answer|" + ID+ "|" + chatID + "|" + ans;
     return str;
 }

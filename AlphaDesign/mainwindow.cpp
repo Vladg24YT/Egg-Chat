@@ -416,5 +416,8 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     if (index == 1){
         server::getInstance()->socket->write("chat|get");
     }
+    else if (index == 3){
+        server::getInstance()->socket->write("invite|get");
+    }
 }
 

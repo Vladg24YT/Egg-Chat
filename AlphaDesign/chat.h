@@ -25,7 +25,7 @@ class chat
 {
 private:
     int chat_id;
-
+    int ureadMessages = 0;
 public:
     void addMessage(message nm);
     int messagesCount;
