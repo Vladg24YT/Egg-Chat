@@ -27,6 +27,7 @@ public:
 class server : public QObject{
     Q_OBJECT
 private:
+    bool connected = false;
     static server * p_instance;
     static destroyer destro;
     QTcpSocket * socket;
@@ -101,6 +102,7 @@ private:
     void changePassMode();
     void changeEmailMode();
     void changeLoginMode();
+    void changeConnectStat(bool setTo);
     void createNewChat();
     void setLoginTabEnable(bool setTo);
 

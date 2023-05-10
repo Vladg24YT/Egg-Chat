@@ -17,6 +17,11 @@ void server::parser(QString line)
     for (QString word : line.split("|")) words.push_back(word);
     if (words.size() <= 0) return;
 
+    if (!connected and words[0] == "Connected"){
+        connected = true;
+        ptr->readData();
+    }
+
     if (!ptr->loginedUser)
     {
         if (words[0] == "OK"){
@@ -45,7 +50,7 @@ void server::parser(QString line)
             ptr->ui->ChatBrowser->append(msg.show());
         }
     }
-    else if (words[0] == "message" and words.size() >= 5){
+    else if (words[0] == "message" and words.size() >= 5 and ptr->chats.contains(words[2])){
         message nm = message(words[1], words[3], words[4]);
         ptr->chats[words[2]].addMessage(nm);
         if (ptr->currentChat == words[2])
@@ -102,12 +107,12 @@ MainWindow::MainWindow(QWidget *parent)
     changeChatMode();
     changeInvUserMode();
     changeAccountStatus(false);
+    changeConnectStat(false);
 
     homeDir = QDir::homePath() + "/Qlient";
 
     // потом удалить
     //ui->NotifList->addItem("Здесь будут приглашения в чаты. Но пока тут ничего нет...");
-    readData();
 }
 
 MainWindow::~MainWindow()
@@ -163,6 +168,26 @@ void MainWindow::changeLoginMode()
     ui->NewLogin->setVisible(loginChange);
 
     ui->AccountLoginLabel->setVisible(!loginChange);
+}
+
+void MainWindow::changeConnectStat(bool setTo)
+{
+    ui->Login->setVisible(setTo);
+    ui->Pass->setVisible(setTo);
+    ui->Pass_2->setVisible(setTo);
+    ui->Email->setVisible(setTo);
+    ui->LoginLine->setVisible(setTo);
+    ui->EmailLine->setVisible(setTo);
+    ui->PassLine->setVisible(setTo);
+    ui->PassLine_2->setVisible(setTo);
+    ui->SignButton->setVisible(setTo);
+    ui->changeModeButton->setVisible(setTo);
+    ui->checkBox->setVisible(setTo);
+
+    ui->ConStatLabel->setVisible(!setTo);
+
+    if (setTo)
+        this->readData();
 }
 
 
@@ -304,6 +329,7 @@ void MainWindow::setLoginTabEnable(bool setTo)
 
 void MainWindow::readData()
 {
+    qDebug() << "Reading data from file";
     /*для корректной работы должна быть предварительно
     создана папка Qlient в домашней папке пользователя*/
     QFile file(homeDir + "/data.txt");
@@ -331,6 +357,7 @@ void MainWindow::readData()
 
 void MainWindow::writeData(int stat)
 {
+    qDebug() << "Writting data to file";
     QFile file(homeDir + "/data.txt");
     if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
         file.close();
