@@ -19,7 +19,7 @@ void server::parser(QString line)
 
     if (!connected and words[0] == "Connected"){
         connected = true;
-        ptr->readData();
+        ptr->changeConnectStat(true);
     }
 
     if (!ptr->loginedUser)
@@ -61,8 +61,12 @@ void server::parser(QString line)
         qDebug () << line;
     }
     // заглушка на получение нового приглашения
-    else if (words[0] == "invite"){
+    else if (words[0] == "invite" and words.size() >= 5){
         qDebug() << line;
+        qDebug() << line;
+        invite ni = invite(words[1], words[2], words[3], words[4]);
+        ptr->ui->NotifList->addItem(ni.toString());
+        ptr->ui->NotifList->item(ptr->ui->NotifList->count() - 1)->setToolTip(words[1]);
     }
 
 }
@@ -174,12 +178,12 @@ void MainWindow::changeConnectStat(bool setTo)
 {
     ui->Login->setVisible(setTo);
     ui->Pass->setVisible(setTo);
-    ui->Pass_2->setVisible(setTo);
-    ui->Email->setVisible(setTo);
+    ui->Pass_2->setVisible(setTo & mode);
+    ui->Email->setVisible(setTo & mode);
     ui->LoginLine->setVisible(setTo);
-    ui->EmailLine->setVisible(setTo);
+    ui->EmailLine->setVisible(setTo & mode);
     ui->PassLine->setVisible(setTo);
-    ui->PassLine_2->setVisible(setTo);
+    ui->PassLine_2->setVisible(setTo & mode);
     ui->SignButton->setVisible(setTo);
     ui->changeModeButton->setVisible(setTo);
     ui->checkBox->setVisible(setTo);
@@ -310,10 +314,14 @@ void MainWindow::changeChatMode()
 
 
 void MainWindow::createNewChat(){
-    changeChatMode();
+    QString chatName = ui->NewChatNameLine->text();
+    QString chatDesc = ui->NewChatDesc->toPlainText();
 
-    ui->listWidget->addItem(ui->NewChatNameLine->text());
-    qDebug() << "New chat created";
+    if (chatName != ""){
+        QString msg = "chat|create|" + chatName + "|" + chatDesc;
+        server::getInstance()->socket->write(msg.toUtf8());
+        changeChatMode();
+     }
 }
 
 void MainWindow::setLoginTabEnable(bool setTo)
@@ -391,7 +399,8 @@ void MainWindow::on_InviteUserBtn_clicked()
 
 void MainWindow::on_leaveChatBtn_clicked()
 {
-    ui->ChatBrowser->append("Вы вышли из этого чата");
+    QString msg = "chat|leave" + currentChat;
+    server::getInstance()->socket->write(msg.toUtf8());
 }
 
 void MainWindow::changeInvUserMode()
