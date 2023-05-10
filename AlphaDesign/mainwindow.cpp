@@ -264,6 +264,8 @@ void MainWindow::on_logoutBtn_clicked()
     server::getInstance()->socket->write("logout");
     setLoginTabEnable(true);
     changeAccountStatus(false);
+    ui->listWidget->clear();
+    ui->NotifList->clear();
 }
 
 
@@ -347,6 +349,7 @@ void MainWindow::readData()
     else{
         std::vector<QString> lines;
         QString in = file.readAll();
+        qDebug() << in;
         for (QString line : in.split("\n")) lines.push_back(line);
 
         if (lines.size() == 3){
@@ -367,13 +370,14 @@ void MainWindow::writeData(int stat)
 {
     qDebug() << "Writting data to file";
     QFile file(homeDir + "/data.txt");
-    if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         file.close();
     else{
         file.Truncate;
         QString dt = QString::number(stat) + "\n" + ui->LoginLine->text() + "\n" + ui->PassLine->text();
         qDebug() << dt;
-        file.write(dt.toUtf8());
+        QTextStream out(&file);
+        out << dt;
         file.close();
     }
 }
