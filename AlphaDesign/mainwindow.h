@@ -93,6 +93,10 @@ private slots:
     void changeAccountStatus(bool newStatus);
     void on_tabWidget_currentChanged(int index);
 
+    void on_InviteAccept_clicked();
+
+    void on_InviteDecline_clicked();
+
 private:
     QString homeDir;
     QMap<QString, chat> chats;

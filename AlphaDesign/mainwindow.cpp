@@ -56,14 +56,17 @@ void server::parser(QString line)
         if (ptr->currentChat == words[2])
             ptr->ui->ChatBrowser->append(nm.show());
     }
-    // заглушка на получения списка приглосов
-    else if (words[0] == "invitelist"){
-        qDebug () << line;
+    else if (words[0] == "invitelist" and words.size() >= 5){
+        ptr->invites.clear();
+        ptr->ui->NotifList->clear();
+        for (int i = 1; i < words.size(); i += 4)
+            ptr->invites.insert(words[i], invite(words[i], words[i+1], words[i+2], words[i+3]));
+        for (invite i : ptr->invites){
+            ptr->ui->NotifList->addItem(i.toString());
+            ptr->ui->NotifList->item(ptr->ui->NotifList->count() - 1)->setToolTip(i.getID());
+        }
     }
-    // заглушка на получение нового приглашения
     else if (words[0] == "invite" and words.size() >= 5){
-        qDebug() << line;
-        qDebug() << line;
         invite ni = invite(words[1], words[2], words[3], words[4]);
         ptr->ui->NotifList->addItem(ni.toString());
         ptr->ui->NotifList->item(ptr->ui->NotifList->count() - 1)->setToolTip(words[1]);
@@ -403,7 +406,7 @@ void MainWindow::on_InviteUserBtn_clicked()
 
 void MainWindow::on_leaveChatBtn_clicked()
 {
-    QString msg = "chat|leave" + currentChat;
+    QString msg = "chat|leave|" + currentChat;
     server::getInstance()->socket->write(msg.toUtf8());
 }
 
@@ -461,6 +464,30 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     }
     else if (index == 3){
         server::getInstance()->socket->write("invite|get");
+    }
+}
+
+
+void MainWindow::on_InviteAccept_clicked()
+{
+    try{
+        QString ans = invites[ui->NotifList->currentItem()->toolTip()].answer(true);
+        server::getInstance()->socket->write(ans.toUtf8());
+    }
+    catch (...){
+        return;
+    }
+}
+
+
+void MainWindow::on_InviteDecline_clicked()
+{
+    try{
+        QString ans = invites[ui->NotifList->currentItem()->toolTip()].answer(false);
+        server::getInstance()->socket->write(ans.toUtf8());
+    }
+    catch (...){
+        return;
     }
 }
 

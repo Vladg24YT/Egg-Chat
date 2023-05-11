@@ -13,7 +13,7 @@ private:
 public:
     invite();
     invite(QString invID, QString chat, QString chat_id, QString inviter);
-
+    QString getID();
     QString toString();
     QString answer(bool answer); // true - accept, false - decline
 };

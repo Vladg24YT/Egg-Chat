@@ -10,6 +10,11 @@ invite::invite(QString invID, QString chat, QString chat_id, QString inviter)
     this->inviterName = inviter;
 }
 
+QString invite::getID()
+{
+    return ID;
+}
+
 QString invite::toString()
 {
     QString str;
