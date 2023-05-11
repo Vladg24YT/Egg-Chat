@@ -35,6 +35,8 @@ void server::parser(QString line)
     }
     if (words[0] == "chatlist" and words.size() >= 5){
         ptr->ui->listWidget->clear();
+        ptr->chats.clear();
+        ptr->ui->ChatBrowser->clear();
         for (int i = 1; i < words.size(); i += 4){
             ptr->ui->listWidget->addItem(words[i+2]);
             ptr->ui->listWidget->item(ptr->ui->listWidget->count() - 1)->setToolTip(words[i]);
@@ -269,6 +271,7 @@ void MainWindow::on_logoutBtn_clicked()
     changeAccountStatus(false);
     ui->listWidget->clear();
     ui->NotifList->clear();
+    ui->ChatBrowser->clear();
 }
 
 
@@ -482,12 +485,9 @@ void MainWindow::on_InviteAccept_clicked()
 
 void MainWindow::on_InviteDecline_clicked()
 {
-    try{
+    if (invites.contains(ui->NotifList->currentItem()->toolTip())) {
         QString ans = invites[ui->NotifList->currentItem()->toolTip()].answer(false);
         server::getInstance()->socket->write(ans.toUtf8());
     }
-    catch (...){
-        return;
-    }
+    return;
 }
-
