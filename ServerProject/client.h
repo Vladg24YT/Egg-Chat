@@ -88,7 +88,7 @@ private:
 	void leaveChat(std::vector<QString> words);
 	void removeChat(std::vector<QString> words);
 	void sendInvite(std::vector<QString> words);
-	void getInvite(std::vector<QString> words);
+	void getInvite();
 	void ansewerInvite(std::vector<QString> words);
 	void kickUser(std::vector<QString> words);
 	void sendReport(std::vector<QString> words);

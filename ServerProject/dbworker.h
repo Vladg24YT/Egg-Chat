@@ -47,9 +47,15 @@ public:
 	/// Метод проверки на существование пользователя.
 	/// </summary>
 	/// <param name="login">- логин</param>
-	/// <param name="password">- пароль</param>
 	/// <returns>Если пользователь найдет, то вернет true иначе false</returns>
-	static bool searchUser(QString login, QString password);
+	static bool searchUser(QString login);
+	/// <summary>
+	/// Метод проверки на существование пользователя.
+	/// </summary>
+	/// <param name="login">- логин</param>
+	/// <param name="passwrod">- пароль</param>
+	/// <returns>Если пользователь найдет, то вернет true иначе false</returns>
+	static bool authUser(QString login, QString password);
 	/// <summary>
 	/// Метод получения ID пользователя.
 	/// </summary>
@@ -115,17 +121,10 @@ public:
 	/// <returns>Возвращает строку со всеми приглашениями, содержащую ID приглашения, ID отправителя и ID чата</returns>
 	static QString selectInvite(int userID);
 	/// <summary>
-	/// Метод обновления статуса приглашения.
+	/// Метод удаления приглашения после ответа на него.
 	/// </summary>
 	/// <param name="inviteID">- ID приглашения</param>
-	/// <param name="answer">- ответ в виде true или false</param>
-	static void updateInvite(int inviteID, bool answer);
-	/// <summary>
-	/// Метод удаления пользователя из чата.
-	/// </summary>
-	/// <param name="userID">- ID Удаляемого пользователя</param>
-	/// <param name="chatID">- ID чата из которого удаляется</param>
-	static void removeUserChat(int userID, int chatID);
+	static void removeInvite(int inviteID);
 	/// <summary>
 	/// Метод добавления жалобы
 	/// </summary>
@@ -137,6 +136,16 @@ public:
 	/// </summary>
 	/// <returns>Возвращает строку со всеми жалобами, содержащие в себе ID жалобы, ID полььзователя, тест сообщения</returns>
 	static QString selectReport();
+	/// <summary>
+	/// Метод обновления данных пользователя.
+	/// </summary>
+	/// <param name="userID">- ID пользователя</param>
+	/// <param name="login">- строка логина</param>
+	/// <param name="password">- строка пароля</param>
+	/// <param name="email">- строка почты</param>
+	/// <param name="nickname">- строка никнейма</param>
+	/// <returns></returns>
+	static bool updateUser(int userID, QString login, QString password, QString email, QString nickname);
 };
 
 #endif // DBWORKER_H

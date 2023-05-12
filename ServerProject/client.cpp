@@ -35,7 +35,7 @@ void Client::parser(QString line) {
 	}
 	if (words[0] == "invite") {
 		if (words.size() > 1) {
-			if (words[1] == "get") return getInvite(words);
+			if (words[1] == "get") return getInvite();
 			if (words[1] == "send") return sendInvite(words);
 			if (words[1] == "answer") return ansewerInvite(words);
 		}
@@ -62,7 +62,7 @@ void Client::login(std::vector<QString> words) {
 	if (words.size() != 3 || (words[1] == "" || words[2] == ""))
 		return Send("Wrong login or password!");
 	else {
-		isAuth = DBWorker::searchUser(words[1], words[2]);
+		isAuth = DBWorker::authUser(words[1], words[2]);
 		if (isAuth) {
 			id = DBWorker::getUserID(words[1], words[2]);
 			return Send("OK");
@@ -74,7 +74,7 @@ void Client::registration(std::vector<QString> words) {
 	if (words.size() != 4 || (words[1] == "" || words[2] == "" || words[3] == ""))
 		Send("Wrong data!");
 	else {
-		bool isExist = DBWorker::searchUser(words[1], words[2]);
+		bool isExist = DBWorker::searchUser(words[1]);
 		if (!isExist) {
 			DBWorker::insertUser(words[1], words[2], words[3]);
 			isAuth = true;
@@ -86,17 +86,31 @@ void Client::registration(std::vector<QString> words) {
 }
 void Client::createChat(std::vector<QString> words) {
 	if (words.size() == 4)
-		if (words[2] != "" && words[3] != "") return DBWorker::insertChat(id, words[2], words[3]);
+		if (words[2] != "" && words[3] != "") {
+			DBWorker::insertChat(id, words[2], words[3]);
+			return getChats();
+		}
 	return Send("Invalid chat command!");
 }
 void Client::leaveChat(std::vector<QString> words) {
 	if (words.size() == 3)
-		if (words[2] != "") return DBWorker::leaveChat(id, words[2].toInt());
+		if (words[2] != "") {
+			DBWorker::leaveChat(id, words[2].toInt());
+			emit Kick(words[1].toInt(), "kick|" + words[2]);
+			int index = Chats.indexOf(words[2].toInt());
+			if (index == -1) Chats.remove(index);
+			return;
+		}
 	return Send("Invalid chat command!");
 }
 void Client::removeChat(std::vector<QString> words) {
 	if (words.size() == 3)
-		if (words[2] != "") return DBWorker::removeChat(words[2].toInt());
+		if (words[2] != "") {
+			DBWorker::removeChat(words[2].toInt());
+			int index = Chats.indexOf(words[2].toInt());
+			if (index == -1) return Chats.remove(index);
+			return;
+		}
 	return Send("Invalid chat command!");
 }
 void Client::sendInvite(std::vector<QString> words) {
@@ -104,27 +118,28 @@ void Client::sendInvite(std::vector<QString> words) {
 		if (words[2] != "" && words[3] != "") return DBWorker::insertInvite(id, words[2], words[3].toInt());
 	return Send("Invalid invite command!");
 }
-void Client::getInvite(std::vector<QString> words) {
-	if (words.size() == 3)
-		if (words[2] != "") {
-			QString response = "invitelist|" + DBWorker::selectInvite(id);
-			Send(response);
-		};
-	Send("Invalid chat command!");
+void Client::getInvite() {
+	QString response = "invitelist|" + DBWorker::selectInvite(id);
+	Send(response);
 }
 void Client::ansewerInvite(std::vector<QString> words) {
 	if (words.size() == 5)
 		if (words[2] != "" && words[3] != "" && words[4] != "") {
 			bool answer = words[4].toInt();
-			if (answer) DBWorker::addUserChat(id, words[3].toInt());
-			return DBWorker::updateInvite(words[2].toInt(), answer);
+			if (answer) {
+				DBWorker::addUserChat(id, words[3].toInt());
+				Chats.append(words[3].toInt());
+				getChats();
+			}
+			getInvite();
+			return DBWorker::removeInvite(words[2].toInt());
 		}
 	return Send("Invalid invite command!");
 }
 void Client::kickUser(std::vector<QString> words) {
 	if (words.size() == 3)
 		if (words[1] != "" && words[2] != "") {
-			DBWorker::removeUserChat(words[1].toInt(), words[2].toInt());
+			DBWorker::leaveChat(words[2].toInt(), words[1].toInt());
 			emit Kick(words[1].toInt(), "kick|" + words[2]);
 			return;
 		}
@@ -163,7 +178,6 @@ void Client::getMessage(std::vector<QString> words) {
 	if (words.size() == 3)
 		if (words[2] != "") {
 			QString response = "messagelist|" + DBWorker::selectMessages(words[2].toInt());
-			response.remove(response.size() - 1, 1);
 			return Send(response);
 		}
 	return Send("Invalid message command!");

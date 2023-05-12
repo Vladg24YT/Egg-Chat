@@ -21,7 +21,7 @@ void Server::slotNewConnection() {
 	connect(client, &Client::Message, this, &Server::slotMessage);
 	connect(client, &Client::Kick, this, &Server::slotKick);
 	connect(client, &Client::Close, this, &Server::slotRemove);
-	QString message = "Connected! ☺ Your ID = " + QString::number(client->GetDescriptor());
+	QString message = "Connected|ID|" + QString::number(client->GetDescriptor());
 	client->Send(message);
 	qDebug() << "[SERVER] Client " << sok->peerAddress() << client->GetDescriptor() << "connected";
 }
