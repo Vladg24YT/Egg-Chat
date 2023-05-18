@@ -16,11 +16,20 @@
 class server;
 class MainWindow;
 
+/*!
+ * \brief The destroyer class
+ * Деструктор для класса server
+ */
 class destroyer{
 private:
     server * p_instance;
 public:
     ~destroyer() {delete p_instance;}
+    /*!
+     * \brief init
+     * Инициализирует этот класс указанием ссылки на класс server
+     * \param [server*]p указатель на класс server
+     */
     void init(server * p){ p_instance = p; };
 };
 
@@ -42,6 +51,12 @@ protected:
     MainWindow * ptr;
     void parser(QString line);
 public:
+    /*!
+     * \brief getInstance
+     * Возвращает ссылку на себя
+     * \return
+     * [Server*] - ссылка на себя
+     */
     static server * getInstance();
     //void signIn(QString login, QString password);
 private slots:
@@ -54,6 +69,11 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+/*!
+ * \brief The MainWindow class
+ * Класс окна, в котором происходит
+ * <br> всё взаимодействие с пользователем
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -65,6 +85,12 @@ class MainWindow : public QMainWindow
          loginedUser = false; // вошел ли юзер в аккаунт
 
 public:
+    /*!
+     * \brief MainWindow
+     * Конструктор класса окна
+     * <br> Вызывается в main.cpp
+     * \param [QWidget]parent ???
+     */
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
