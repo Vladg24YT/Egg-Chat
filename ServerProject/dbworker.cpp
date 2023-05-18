@@ -1,27 +1,33 @@
-#include <DBWorker.h>
+#include "DBWorker.h"
 
 
 void DBWorker::open() {
-	QString path = "";
+	if (!DBWorker::getInstance()->db.isOpen()) {
+		QString path = "";
 #ifdef DEBUG
-	path = "C:/Users/rustv/Documents/QtProjects/Egg-Chat/ServerProject/";
-	qDebug() << "DEBUG mode";
+		path = "C:/Users/rustv/Documents/QtProjects/Egg-Chat/ServerProject/";
+		qDebug() << "DEBUG mode";
 #endif
-	db = QSqlDatabase::addDatabase("QSQLITE");
-	db.setDatabaseName(path + "sqlite.db");
-	if (!db.open()) qDebug() << db.lastError().text();
-}
-
-void DBWorker::createDB() {
-	getInstance();
-	if (!db.isOpen()) open();
+		DBWorker::getInstance()->db = QSqlDatabase::addDatabase("QSQLITE");
+		DBWorker::getInstance()->db.setDatabaseName(path + "sqlite.db");
+		if (!DBWorker::getInstance()->db.open()) qDebug() << DBWorker::getInstance()->db.lastError().text();
+	}
 }
 void DBWorker::close() {
-	if (db.isOpen()) db.close();
+	if (DBWorker::getInstance()->db.isOpen()) DBWorker::getInstance()->db.close();
 }
-
-bool DBWorker::insertUser(QString login, QString password, QString email)
-{
+QString DBWorker::getUserNickname(int userID) {
+	QSqlQuery query = QSqlQuery(db);
+	query.prepare("select nickname from users where id = ?");
+	query.addBindValue(userID);
+	query.exec();
+	while (query.next()) {
+		QSqlRecord rec = query.record();
+		return query.value(0).toString();
+	}
+	return "";
+}
+bool DBWorker::insertUser(QString login, QString password, QString email) {
 	QSqlQuery query = QSqlQuery(db);
 	query.prepare("insert into users (login, password, nickname, email) values (?, ?, ?, ?) ");
 	query.addBindValue(login);
@@ -31,8 +37,18 @@ bool DBWorker::insertUser(QString login, QString password, QString email)
 	query.exec();
 	return !query.lastError().isValid();
 }
-
-bool DBWorker::searchUser(QString login, QString password) {
+bool DBWorker::searchUser(QString login) {
+	QSqlQuery query = QSqlQuery(db);
+	query.prepare("select * from users where login = ?");
+	query.addBindValue(login);
+	query.exec();
+	bool isExist = false;
+	while (query.next()) {
+		isExist = true;
+	}
+	return isExist;
+}
+bool DBWorker::authUser(QString login, QString password) {
 	QSqlQuery query = QSqlQuery(db);
 	query.prepare("select * from users where login = ? and password = ?");
 	query.addBindValue(login);
@@ -41,8 +57,6 @@ bool DBWorker::searchUser(QString login, QString password) {
 	bool isExist = false;
 	while (query.next()) {
 		isExist = true;
-		QSqlRecord rec = query.record();
-		const int idIndex = rec.indexOf("id");
 	}
 	return isExist;
 }
@@ -54,9 +68,9 @@ int DBWorker::getUserID(QString login, QString password) {
 	query.exec();
 	while (query.next()) {
 		QSqlRecord rec = query.record();
-		const int idIndex = rec.indexOf("id");
-		return query.value(idIndex).toInt();
+		return query.value(0).toInt();
 	}
+	return 0;
 }
 void DBWorker::insertChat(int userID, QString name, QString description) {
 	QSqlQuery query = QSqlQuery(db);
@@ -80,17 +94,10 @@ QMap<int, QString> DBWorker::selectUserChats(int userID) {
 		response += query.value(0).toString() + '|';
 		response += query.value(1).toString() + '|';
 		response += query.value(2).toString() + '|';
-		response += query.value(3).toString() + '|';
+		response += query.value(3).toString();
 		chats.insert(id, response);
 	}
 	return chats;
-}
-void DBWorker::leaveChat(int userID, int chatID) {
-	QSqlQuery query = QSqlQuery(db);
-	query.prepare("delete from users_chats where chat_id = ? and user_id = ?");
-	query.addBindValue(chatID);
-	query.addBindValue(userID);
-	query.exec();
 }
 void DBWorker::addUserChat(int userID, int inviteID) {
 	QSqlQuery query = QSqlQuery(db);
@@ -98,6 +105,7 @@ void DBWorker::addUserChat(int userID, int inviteID) {
 	query.addBindValue(userID);
 	query.addBindValue(inviteID);
 	query.exec();
+	qDebug() << query.lastError();
 }
 void DBWorker::removeChat(int chatID) {
 	QSqlQuery query = QSqlQuery(db);
@@ -113,50 +121,52 @@ void DBWorker::insertMessage(int userID, int chatID, QString text) {
 	query.addBindValue(text);
 	query.exec();
 }
-QString DBWorker::selectMessages(int chatID) {
+QString DBWorker::selectMessages(int chatID, int limit) {
 	QSqlQuery query = QSqlQuery(db);
 	QString response;
-	query.prepare("select users.nickname, sendTime, msg from messages join users on users.id = sender where chat = ?");
+	query.prepare("select * from (select messages.id, users.nickname, sendTime, msg from messages join users on users.id = sender where chat = ? order by messages.id desc limit ?) order by id asc");
 	query.addBindValue(chatID);
+	query.addBindValue(limit);
 	query.exec();
 	while (query.next()) {
 		QSqlRecord rec = query.record();
-		response += query.value(0).toString() + query.value(1).toString() + query.value(2).toString() + "\n";
+		response += query.value(1).toString() + '|' + query.value(2).toString() + '|' + query.value(3).toString() + '|';
 	}
+	response.chop(1);
 	return response;
 }
-void DBWorker::insertInvite(int senderID, int receiverID, int ChatID) {
+void DBWorker::insertInvite(int senderID, QString receiver, int ChatID) {
 	QSqlQuery query = QSqlQuery(db);
-	query.prepare("insert into invites (sender, receiver, chat, status) VALUES (?, ?, ?, 0)");
+	query.prepare("insert into invites (sender, receiver, chat, status) VALUES (?, (select users.id from users where login = ?), ?, 0)");
 	query.addBindValue(senderID);
-	query.addBindValue(receiverID);
+	query.addBindValue(receiver);
 	query.addBindValue(ChatID);
 	query.exec();
 }
 QString DBWorker::selectInvite(int userID) {
 	QSqlQuery query = QSqlQuery(db);
 	QString response;
-	query.prepare("select sender, chat from messages where receiver = ?");
+	query.prepare("select invites.id, chats.name, chats.id, users.nickname from invites join chats on chats.id = invites.chat join users on users.id = invites.sender where receiver = ? and invites.status = 0");
 	query.addBindValue(userID);
 	query.exec();
 	while (query.next()) {
 		QSqlRecord rec = query.record();
-		response += query.value(0).toString() + '|' + query.value(1).toString() + '|';
+		response += query.value(0).toString() + '|' + query.value(1).toString() + '|' + query.value(2).toString() + '|' + query.value(3).toString();
+		if (!query.last()) response += '|';
 	}
 	return response;
 }
-void DBWorker::updateInvite(int inviteID, bool answer) {
+void DBWorker::removeInvite(int inviteID) {
 	QSqlQuery query = QSqlQuery(db);
-	query.prepare("update invites set status = ? where id = ?");
-	query.addBindValue(answer);
+	query.prepare("delete from invites where id = ?");
 	query.addBindValue(inviteID);
 	query.exec();
 }
-void DBWorker::removeUserChat(int userID, int chatID) {
+void DBWorker::leaveChat(int userID, int chatID) {
 	QSqlQuery query = QSqlQuery(db);
-	query.prepare("delete from users_chats where user_id = ? and chat_id = ?");
-	query.addBindValue(userID);
+	query.prepare("delete from users_chats where chat_id = ? and user_id = ?");
 	query.addBindValue(chatID);
+	query.addBindValue(userID);
 	query.exec();
 }
 void DBWorker::insertReport(int userID, QString text) {
@@ -166,16 +176,45 @@ void DBWorker::insertReport(int userID, QString text) {
 	query.addBindValue(text);
 	query.exec();
 }
-QString DBWorker::selectReport(){
+QString DBWorker::selectReport() {
 	QSqlQuery query = QSqlQuery(db);
 	QString response;
 	query.prepare("select * from reports");
 	query.exec();
-	response += query.value(0).toString() + '|' + query.value(1).toString() + '|';
 	while (query.next()) {
 		QSqlRecord rec = query.record();
-		response += query.value(0).toString() + '|' + query.value(1).toString() + '|' + query.value(2).toString() + '|';
+		response += query.value(0).toString() + '|' + query.value(1).toString() + '|' + query.value(2).toString();
+		if (!query.last()) response += '|';
 	}
 	return response;
 }
-QSqlDatabase DBWorker::db;
+bool DBWorker::updateUser(int userID, QString login, QString password, QString email, QString nickname) {
+	QSqlQuery query = QSqlQuery(db);
+	query.prepare("update users set login = ?, password = ?, email = ?, nickname = ? where id = ?");
+	query.addBindValue(login);
+	query.addBindValue(password);
+	query.addBindValue(email);
+	query.addBindValue(nickname);
+	query.addBindValue(userID);
+	query.exec();
+	return !query.lastError().isValid();
+}
+//QSqlDatabase DBWorker::db;
+SingletonDestroyer::~SingletonDestroyer(){
+    delete p_instance;
+}
+void SingletonDestroyer::init(DBWorker* p){
+    p_instance = p;
+}
+
+DBWorker* DBWorker::getInstance(){
+    if (!p_instance){
+        p_instance = new DBWorker();
+        destroyer.init(p_instance);
+    }
+    return p_instance;
+}
+
+DBWorker* DBWorker::p_instance;
+SingletonDestroyer DBWorker::destroyer;
+DBWorker* SingletonDestroyer::p_instance;

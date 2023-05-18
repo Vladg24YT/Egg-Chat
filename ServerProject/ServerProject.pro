@@ -9,11 +9,8 @@ CONFIG -= app_bundle
 
 SOURCES += \
         dbworker.cpp \
-        functions.cpp \
         client.cpp \
         main.cpp \
-        models.cpp \
-        parser.cpp \
         server.cpp \
         singleton.cpp
 
@@ -24,9 +21,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     dbworker.h \
-    functions.h \
-    models.h \
-    parser.h \
     client.h \
     server.h \
     singleton.h

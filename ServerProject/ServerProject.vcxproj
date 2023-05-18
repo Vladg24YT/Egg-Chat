@@ -186,7 +186,6 @@
     <ClCompile Include="dbworker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="server.cpp" />
-    <ClCompile Include="singleton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="client.h">
@@ -194,7 +193,6 @@
     <ClInclude Include="dbworker.h" />
     <QtMoc Include="server.h">
     </QtMoc>
-    <ClInclude Include="singleton.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">

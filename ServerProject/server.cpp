@@ -1,42 +1,39 @@
-#include "server.h"
+﻿#include "server.h"
 #include <string>
 
-Server::Server(QObject* parent) : QObject{ parent }
-{
-	DBWorker::createDB();
-
+Server::Server(QObject* parent) : QObject{ parent }{
+	DBWorker::getInstance()->open();
 	TcpServer = new QTcpServer(this);
 	connect(TcpServer, &QTcpServer::newConnection, this, &Server::slotNewConnection);
 
 	if (!TcpServer->listen(QHostAddress::Any, 34197)) {
-		qDebug() << "server is not started";
+		qDebug() << "[SERVER] Server is not started";
 	}
 	else {
-		qDebug() << "server is started";
+		qDebug() << "[SERVER] Server is started";
 	}
 }
 void Server::slotNewConnection() {
 	QTcpSocket* sok = TcpServer->nextPendingConnection();
-	qDebug() << sok->peerAddress() << sok->socketDescriptor();
-	Client* client = new Client(this, sok);
+	Client* client = new Client(sok);
+	Clients.insert(client->GetDescriptor(), client);
 	connect(client, &Client::Message, this, &Server::slotMessage);
 	connect(client, &Client::Kick, this, &Server::slotKick);
 	connect(client, &Client::Close, this, &Server::slotRemove);
-	QString message = "Connected! Your ID = " + sok->socketDescriptor();
-	Clients.insert(sok->socketDescriptor(), client);
-	client->Socket->write(message.toUtf8());
+	QString message = "Connected|ID|" + QString::number(client->GetDescriptor());
+	client->Send(message);
+	qDebug() << "[SERVER] Client " << sok->peerAddress() << client->GetDescriptor() << "connected";
 }
-// нужен id отправителя
-void Server::slotMessage(int senderID, int chatID, QString text) {
-	qDebug() << "Start broadcast";
-	QString response = "message|" + senderID + '|' + chatID + '|' + text;
+void Server::slotMessage(QString sender, int chatID, QString text) {
+	QString response = "message|";
+	response += sender + "|" + QString::number(chatID) + "|" + text + "|" + QDateTime::currentDateTime().toString();
+	qDebug() << "[SERVER] Start broadcast: " << response;
 	foreach(Client * c, Clients) {
 		if (c->Chats.contains(chatID)) {
 			c->Send(response);
 		}
 	}
 }
-
 void Server::slotKick(int userID, QString command) {
 	foreach(Client * c, Clients) {
 		if (c->GetID() == userID) {
@@ -45,17 +42,14 @@ void Server::slotKick(int userID, QString command) {
 		}
 	}
 }
-
-// удаление из списка отключившегося клиента
 void Server::slotRemove(Client* client) {
-	Clients.remove(client->Socket->socketDescriptor());
+	Clients.remove(client->GetDescriptor());
 	client->Socket->close();
-	qDebug() << "Client disconnected";
+	qDebug() << "[SERVER] Client disconnected";
 }
-// деструктор
 Server::~Server() {
 	foreach(Client * clnt, Clients) {
 		clnt->Socket->close();
 	}
-	DBWorker::close();
+	DBWorker::getInstance()->close();
 }

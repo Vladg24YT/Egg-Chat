@@ -4,69 +4,94 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <string>
-#include <DBWorker.h>
+#include "DBWorker.h"
 
-
-class Client : public QObject
-{
-    Q_OBJECT
+/// <summary>
+/// Класс клиента, наследуется от QObject.
+/// Содержит функционал парсера и взаимодействует с классом для использования базы данных.
+/// </summary>
+class Client : public QObject {
+	Q_OBJECT
 public:
-    explicit Client(QObject *parent = nullptr, QTcpSocket *socket = nullptr);
-    ~Client();
-    QTcpSocket *Socket;
-    int GetID();
-    QList<int> Chats;
-    void Send(QString text);
+	/// <summary>
+	/// Конструктор класса Client. Принимает QTcpSocket для принятия подключения пользователя.
+	/// </summary>
+	/// <param name="socket">- класс QTcpSocket</param>
+	/// <param name="parent">- опционально, указание родительского класса</param>
+	explicit Client(QTcpSocket* socket, QObject* parent = nullptr);
+	/// <summary>
+	/// Деструктор класса Client.
+	/// </summary>
+	~Client();
+	/// <summary>
+	/// Экземпляр класса QTcpSocket, который является подключившимся клиентом.
+	/// </summary>
+	QTcpSocket* Socket;
+	/// <summary>
+	/// Метод получения ID пользователя.
+	/// </summary>
+	/// <returns>тип int</returns>
+	int GetID();
+	/// <summary>
+	/// Метод получения дескриптора подключенного пользователя.
+	/// </summary>
+	/// <returns>тип int</returns>
+	int GetDescriptor();
+	/// <summary>
+	/// Коллекция id чатов пользователя.
+	/// </summary>
+	QList<int> Chats;
+	/// <summary>
+	/// Метод отправка сообщения пользователя напрямую.
+	/// </summary>
+	/// <param name="text">- текст сообщения или команды</param>
+	void Send(QString text);
 public slots:
-    void Read();
-    void OnClosing();
+	/// <summary>
+	/// Слот для считывания данных, отправленных пользователем.
+	/// </summary>
+	void Read();
+	/// <summary>
+	/// Слот, который обозначает что пользователь отключается и отправляет сигнал Close.
+	/// </summary>
+	void OnClosing();
 signals:
-    void Message(int userID, int chatID, QString text);
-    void Kick(int userID, QString command);
-    void Close(Client*);
+	/// <summary>
+	/// Сигнал для отправки сообщений.
+	/// </summary>
+	/// <param name="user">- никнейм пользователя</param>
+	/// <param name="chatID">- ID чата, в который отправляется сообщение</param>
+	/// <param name="text">- текст сообщения</param>
+	void Message(QString user, int chatID, QString text);
+	/// <summary>
+	/// Сигнал, который указывает какой чат необходимо удалить у клиента.
+	/// </summary>
+	/// <param name="userID">- ID пользователя</param>
+	/// <param name="command">- готовая комманда для удаления определенного чата</param>
+	void Kick(int userID, QString command);
+	/// <summary>
+	/// Сигнал оповещающий что данного клиента необходимо удалить и отключить
+	/// </summary>
+	/// <param name="client">- клиент которого необходимо удалить</param>
+	void Close(Client* client);
 private:
-    int id;
-    bool isAuth = false;
-    ///
-    /// \brief parser
-    /// \param line
-    ///
-    void parser(QString line);
-    /// Авторизация пользователя
-    /// \brief auth
-    /// \param login
-    /// \param password
-    /// \return true если пользователь найден, иначе false
-    ///
-    void login(std::vector<QString>);
-    /// Регистрация пользователя
-    /// \brief registration
-    /// \param login
-    /// \param password
-    /// \return true если удалось зарегестрироваться, иначе false
-    ///
-    void registration(std::vector<QString>);
-    /// Метод выхода из учетной записи
-    /// \brief logout
-    ///
-    void logout();
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="words"></param>
-    void getMessage(std::vector<QString> words);
-    void sendMessage(std::vector<QString> words);
-    void getChats();
-    void createChat(std::vector<QString> words);
-    void leaveChat(std::vector<QString> words);
-    void removeChat(std::vector<QString> words);
-    void sendInvite(std::vector<QString> words);
-    void getInvite(std::vector<QString> words);
-    void ansewerInvite(std::vector<QString> words);
-    void kickUser(std::vector<QString> words);
-    void sendReport(std::vector<QString> words);
-    void getReport();
-
-
+	int id, descriptor;
+	bool isAuth = false;
+	void parser(QString line);
+	void login(std::vector<QString>);
+	void registration(std::vector<QString>);
+	void logout();
+	void getMessage(std::vector<QString> words);
+	void sendMessage(std::vector<QString> words);
+	void getChats();
+	void createChat(std::vector<QString> words);
+	void leaveChat(std::vector<QString> words);
+	void removeChat(std::vector<QString> words);
+	void sendInvite(std::vector<QString> words);
+	void getInvite();
+	void ansewerInvite(std::vector<QString> words);
+	void kickUser(std::vector<QString> words);
+	void sendReport(std::vector<QString> words);
+	void getReport();
 };
 #endif // CLIENT_H
