@@ -4,28 +4,43 @@
 #include <QMainWindow>
 #include <QPixmap>
 #include <QDir>
-
+#include <QFile>
 #include <QObject>
 #include <QTcpSocket>
 #include <vector>
 
+
+#include "chat.h"
+#include "invite.h"
+
 class server;
 class MainWindow;
 
+/*!
+ * \brief The destroyer class
+ * Деструктор для класса server
+ */
 class destroyer{
 private:
     server * p_instance;
 public:
     ~destroyer() {delete p_instance;}
+    /*!
+     * \brief init
+     * Инициализирует этот класс указанием ссылки на класс server
+     * \param [server*]p указатель на класс server
+     */
     void init(server * p){ p_instance = p; };
 };
 
 class server : public QObject{
     Q_OBJECT
 private:
+    bool connected = false;
     static server * p_instance;
     static destroyer destro;
     QTcpSocket * socket;
+
 protected:
     explicit server(QObject * parent = nullptr);
     server(const server&) = delete;
@@ -36,8 +51,14 @@ protected:
     MainWindow * ptr;
     void parser(QString line);
 public:
+    /*!
+     * \brief getInstance
+     * Возвращает ссылку на себя
+     * \return
+     * [Server*] - ссылка на себя
+     */
     static server * getInstance();
-    void signIn(QString login, QString password);
+    //void signIn(QString login, QString password);
 private slots:
     void readSocket();
 };
@@ -48,6 +69,11 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+/*!
+ * \brief The MainWindow class
+ * Класс окна, в котором происходит
+ * <br> всё взаимодействие с пользователем
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -58,55 +84,56 @@ class MainWindow : public QMainWindow
          invNewUserMode = true,
          loginedUser = false; // вошел ли юзер в аккаунт
 
-
 public:
+    /*!
+     * \brief MainWindow
+     * Конструктор класса окна
+     * <br> Вызывается в main.cpp
+     * \param [QWidget]parent ???
+     */
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
     void on_changeModeButton_clicked();
-
     void on_SignButton_clicked();
-
     void on_ChangePassBtn_clicked();
-
     void on_ChangeEmailBtn_clicked();
-
     void on_changeLoginBtn_clicked();
-
     void on_checkBox_2_stateChanged(int arg1);
-
     void on_logoutBtn_clicked();
-
     void on_listWidget_itemSelectionChanged();
-
-    void changeChatMode();
-
     void on_pushButton_clicked();
-
     void on_CreateNewChat_clicked();
-
     void on_InviteUserBtn_clicked();
-
     void on_leaveChatBtn_clicked();
-
-    void changeInvUserMode();
-
     void on_InvUserBtn_clicked();
-
     void on_ChatLine_returnPressed();
-
-    void changeAccountStatus(bool newStatus);
-
     void on_tabWidget_currentChanged(int index);
+    void on_InviteAccept_clicked();
+    void on_InviteDecline_clicked();
 
 private:
+    QString homeDir;
+    QMap<QString, chat> chats;
+    QMap<QString, invite> invites;
+    QString currentChat;
+
+    void readData();
+    void writeData(int stat);
+
     void changeMode();
     void changePassMode();
     void changeEmailMode();
     void changeLoginMode();
-    Ui::MainWindow *ui;
+    void changeChatMode();
+    void changeInvUserMode();
+    void changeAccountStatus(bool newStatus);
+    void changeConnectStat(bool setTo);
     void createNewChat();
+    void setLoginTabEnable(bool setTo);
+
+    Ui::MainWindow *ui;
 };
 
 

@@ -469,11 +469,11 @@
        <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="AuthTab">
        <attribute name="title">
-        <string>Auth</string>
+        <string>Авторизация</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
@@ -492,6 +492,21 @@
            </spacer>
           </item>
           <item>
+           <widget class="QLabel" name="ConStatLabel">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Подключение к серверу...</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="Login">
             <property name="font">
              <font>
@@ -499,7 +514,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Login</string>
+             <string>Логин:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -532,7 +547,7 @@
              </font>
             </property>
             <property name="text">
-             <string>E-mail</string>
+             <string>E-mail:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -565,7 +580,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Password</string>
+             <string>Пароль:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -604,7 +619,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Retype password</string>
+             <string>Повторите пароль:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -649,7 +664,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Sign Up</string>
+             <string>Войти</string>
             </property>
            </widget>
           </item>
@@ -667,7 +682,7 @@
              </font>
             </property>
             <property name="text">
-             <string>I already have an account</string>
+             <string>У меня ещё нет аккаунта</string>
             </property>
            </widget>
           </item>
@@ -679,7 +694,10 @@
              </font>
             </property>
             <property name="text">
-             <string>Don't forget me pls :3</string>
+             <string>Запомните меня пж :3</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -702,7 +720,7 @@
       </widget>
       <widget class="QWidget" name="ChatsTab">
        <attribute name="title">
-        <string>Chats</string>
+        <string>Чаты</string>
        </attribute>
        <layout class="QFormLayout" name="formLayout">
         <item row="1" column="0">
@@ -806,8 +824,14 @@
               <pointsize>11</pointsize>
              </font>
             </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="maxLength">
+             <number>64</number>
+            </property>
             <property name="placeholderText">
-             <string>ID-Пользователя</string>
+             <string>Логин пользователя</string>
             </property>
            </widget>
           </item>
@@ -940,6 +964,9 @@
               <bold>false</bold>
              </font>
             </property>
+            <property name="maxLength">
+             <number>64</number>
+            </property>
             <property name="placeholderText">
              <string>Новый чат</string>
             </property>
@@ -993,6 +1020,9 @@
               <pointsize>11</pointsize>
              </font>
             </property>
+            <property name="maxLength">
+             <number>255</number>
+            </property>
            </widget>
           </item>
           <item>
@@ -1024,7 +1054,7 @@
       </widget>
       <widget class="QWidget" name="AccountTab">
        <attribute name="title">
-        <string>Account</string>
+        <string>Аккаунт</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
@@ -1505,7 +1535,7 @@
       </widget>
       <widget class="QWidget" name="NotificationTab">
        <attribute name="title">
-        <string>Notifications</string>
+        <string>Приглашения</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
@@ -1545,7 +1575,7 @@
       </widget>
       <widget class="QWidget" name="SettingsTab">
        <attribute name="title">
-        <string>Settings</string>
+        <string>Настройки</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
@@ -1658,7 +1688,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
