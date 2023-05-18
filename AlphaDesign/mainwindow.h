@@ -43,7 +43,7 @@ protected:
     void parser(QString line);
 public:
     static server * getInstance();
-    void signIn(QString login, QString password);
+    //void signIn(QString login, QString password);
 private slots:
     void readSocket();
 };
@@ -63,15 +63,10 @@ class MainWindow : public QMainWindow
          passChange = true, newChatCreate = true, // false - chatting, true - creating new chat
          invNewUserMode = true,
          loginedUser = false; // вошел ли юзер в аккаунт
-    bool autoLog = false;
-    QString loginAuto, passAuto;
 
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
-    void readData();
-    void writeData(int stat);
 
 private slots:
     void on_changeModeButton_clicked();
@@ -82,19 +77,14 @@ private slots:
     void on_checkBox_2_stateChanged(int arg1);
     void on_logoutBtn_clicked();
     void on_listWidget_itemSelectionChanged();
-    void changeChatMode();
     void on_pushButton_clicked();
     void on_CreateNewChat_clicked();
     void on_InviteUserBtn_clicked();
     void on_leaveChatBtn_clicked();
-    void changeInvUserMode();
     void on_InvUserBtn_clicked();
     void on_ChatLine_returnPressed();
-    void changeAccountStatus(bool newStatus);
     void on_tabWidget_currentChanged(int index);
-
     void on_InviteAccept_clicked();
-
     void on_InviteDecline_clicked();
 
 private:
@@ -102,10 +92,17 @@ private:
     QMap<QString, chat> chats;
     QMap<QString, invite> invites;
     QString currentChat;
+
+    void readData();
+    void writeData(int stat);
+
     void changeMode();
     void changePassMode();
     void changeEmailMode();
     void changeLoginMode();
+    void changeChatMode();
+    void changeInvUserMode();
+    void changeAccountStatus(bool newStatus);
     void changeConnectStat(bool setTo);
     void createNewChat();
     void setLoginTabEnable(bool setTo);
