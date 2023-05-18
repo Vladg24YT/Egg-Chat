@@ -1,4 +1,4 @@
-﻿#ifndef SERVER_H
+#ifndef SERVER_H
 #define SERVER_H
 
 #include "client.h"
@@ -9,6 +9,7 @@
 #include <QByteArray>
 #include <QDebug>
 #include <QMap>
+
 /// <summary>
 /// Класс сервера, наследуется от QObject. <br>
 /// Реализует функционал прослушивания подключений, хранит подключенных пользователей и управляет ими.

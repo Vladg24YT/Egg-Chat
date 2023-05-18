@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <string>
-#include <DBWorker.h>
+#include "DBWorker.h"
 
 /// <summary>
 /// Класс клиента, наследуется от QObject.

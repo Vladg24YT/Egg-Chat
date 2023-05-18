@@ -1,9 +1,8 @@
 ﻿#include "server.h"
 #include <string>
 
-Server::Server(QObject* parent) : QObject{ parent }
-{
-	DBWorker::createDB();
+Server::Server(QObject* parent) : QObject{ parent }{
+	DBWorker::getInstance()->open();
 	TcpServer = new QTcpServer(this);
 	connect(TcpServer, &QTcpServer::newConnection, this, &Server::slotNewConnection);
 
@@ -52,5 +51,5 @@ Server::~Server() {
 	foreach(Client * clnt, Clients) {
 		clnt->Socket->close();
 	}
-	DBWorker::close();
+	DBWorker::getInstance()->close();
 }

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['leavechat_0',['leaveChat',['../class_d_b_worker.html#a81ea396cd54927f3ebd09d74e2e138d5',1,'DBWorker']]]
+  ['kick_0',['Kick',['../class_client.html#a6c6ed7fd7c51ac33acaae6285ec27d81',1,'Client']]]
 ];

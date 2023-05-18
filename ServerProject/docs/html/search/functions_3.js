@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['insertchat_0',['insertChat',['../class_d_b_worker.html#a643f5c2d702d7781c2bbd482b31e3c56',1,'DBWorker']]],
-  ['insertinvite_1',['insertInvite',['../class_d_b_worker.html#ae761d16f5b6f345e664a9682dc54022c',1,'DBWorker']]],
-  ['insertmessage_2',['insertMessage',['../class_d_b_worker.html#abd4d5707510f8bbe5f2370c1231554dc',1,'DBWorker']]],
-  ['insertreport_3',['insertReport',['../class_d_b_worker.html#a3ee86a5b9602cbef908a3bed7c95643d',1,'DBWorker']]],
-  ['insertuser_4',['insertUser',['../class_d_b_worker.html#a941740e717ae34956d621b2fc666d717',1,'DBWorker']]]
+  ['getdescriptor_0',['GetDescriptor',['../class_client.html#a1ae863d20bbb329fddd688f94e3fd123',1,'Client']]],
+  ['getid_1',['GetID',['../class_client.html#a918c092f92c8506b6c87b3ad8e8add0d',1,'Client']]],
+  ['getinstance_2',['getInstance',['../class_d_b_worker.html#a4fea12bdde5c81b2290805163bfbfd40',1,'DBWorker']]],
+  ['getuserid_3',['getUserID',['../class_d_b_worker.html#acfedf4f036a0ad7f2f2fe34da661a409',1,'DBWorker']]],
+  ['getusernickname_4',['getUserNickname',['../class_d_b_worker.html#ab12e1f91c28cdf3cbb24c28417027778',1,'DBWorker']]]
 ];

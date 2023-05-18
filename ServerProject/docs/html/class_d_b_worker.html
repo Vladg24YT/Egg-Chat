@@ -70,7 +70,10 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Открытые члены</a> &#124;
 <a href="#pub-static-methods">Открытые статические члены</a> &#124;
+<a href="#pro-methods">Защищенные члены</a> &#124;
+<a href="#friends">Друзья</a> &#124;
 <a href="class_d_b_worker-members.html">Полный список членов класса</a>  </div>
   <div class="headertitle"><div class="title">Класс DBWorker</div></div>
 </div><!--header-->
@@ -80,107 +83,135 @@ $(function() {
  <a href="class_d_b_worker.html#details">Подробнее...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_d_b_worker_8h_source.html">DBWorker.h</a>&gt;</code></p>
-<div class="dynheader">
-Граф наследования:DBWorker:</div>
-<div class="dyncontent">
- <div class="center">
-  <img src="class_d_b_worker.png" usemap="#DBWorker_map" alt=""/>
-  <map id="DBWorker_map" name="DBWorker_map">
-<area href="class_singleton.html" title="Класс синглтона" alt="Singleton" shape="rect" coords="0,0,70,24"/>
-  </map>
-</div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Открытые члены</h2></td></tr>
+<tr class="memitem:ab12e1f91c28cdf3cbb24c28417027778"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#ab12e1f91c28cdf3cbb24c28417027778">getUserNickname</a> (int userID)</td></tr>
+<tr class="memdesc:ab12e1f91c28cdf3cbb24c28417027778"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод получения никнейма пользователя по его ID.  <br /></td></tr>
+<tr class="separator:ab12e1f91c28cdf3cbb24c28417027778"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a941740e717ae34956d621b2fc666d717"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a941740e717ae34956d621b2fc666d717">insertUser</a> (QString login, QString password, QString email)</td></tr>
+<tr class="memdesc:a941740e717ae34956d621b2fc666d717"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод добавления пользователя в базу данных.  <br /></td></tr>
+<tr class="separator:a941740e717ae34956d621b2fc666d717"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a375af4c6a5a86b0669546a9dabbc0ec7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a375af4c6a5a86b0669546a9dabbc0ec7">searchUser</a> (QString login)</td></tr>
+<tr class="memdesc:a375af4c6a5a86b0669546a9dabbc0ec7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод проверки на существование пользователя.  <br /></td></tr>
+<tr class="separator:a375af4c6a5a86b0669546a9dabbc0ec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c1ef351e8a8a0703b202034da9122c2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a4c1ef351e8a8a0703b202034da9122c2">authUser</a> (QString login, QString password)</td></tr>
+<tr class="memdesc:a4c1ef351e8a8a0703b202034da9122c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод проверки на существование пользователя.  <br /></td></tr>
+<tr class="separator:a4c1ef351e8a8a0703b202034da9122c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfedf4f036a0ad7f2f2fe34da661a409"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#acfedf4f036a0ad7f2f2fe34da661a409">getUserID</a> (QString login, QString password)</td></tr>
+<tr class="memdesc:acfedf4f036a0ad7f2f2fe34da661a409"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод получения ID пользователя.  <br /></td></tr>
+<tr class="separator:acfedf4f036a0ad7f2f2fe34da661a409"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a643f5c2d702d7781c2bbd482b31e3c56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a643f5c2d702d7781c2bbd482b31e3c56">insertChat</a> (int userID, QString name, QString description)</td></tr>
+<tr class="memdesc:a643f5c2d702d7781c2bbd482b31e3c56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод создания чата.  <br /></td></tr>
+<tr class="separator:a643f5c2d702d7781c2bbd482b31e3c56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acbd0c94948ac56652b2be36017ff8b8b"><td class="memItemLeft" align="right" valign="top">QMap&lt; int, QString &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#acbd0c94948ac56652b2be36017ff8b8b">selectUserChats</a> (int userID)</td></tr>
+<tr class="memdesc:acbd0c94948ac56652b2be36017ff8b8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод получения чатов пользователя.  <br /></td></tr>
+<tr class="separator:acbd0c94948ac56652b2be36017ff8b8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81ea396cd54927f3ebd09d74e2e138d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a81ea396cd54927f3ebd09d74e2e138d5">leaveChat</a> (int userID, int chatID)</td></tr>
+<tr class="memdesc:a81ea396cd54927f3ebd09d74e2e138d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод выхода из чата.  <br /></td></tr>
+<tr class="separator:a81ea396cd54927f3ebd09d74e2e138d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03415efa3c8eb394d035140c65d0dd43"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a03415efa3c8eb394d035140c65d0dd43">addUserChat</a> (int userID, int chatID)</td></tr>
+<tr class="memdesc:a03415efa3c8eb394d035140c65d0dd43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод добавления пользователя в чат  <br /></td></tr>
+<tr class="separator:a03415efa3c8eb394d035140c65d0dd43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa20548b9df815244e4b565e911eda0b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#aa20548b9df815244e4b565e911eda0b3">removeChat</a> (int chatID)</td></tr>
+<tr class="memdesc:aa20548b9df815244e4b565e911eda0b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод удаления чата.  <br /></td></tr>
+<tr class="separator:aa20548b9df815244e4b565e911eda0b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd4d5707510f8bbe5f2370c1231554dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#abd4d5707510f8bbe5f2370c1231554dc">insertMessage</a> (int userID, int chatID, QString text)</td></tr>
+<tr class="memdesc:abd4d5707510f8bbe5f2370c1231554dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод добавления сообщения.  <br /></td></tr>
+<tr class="separator:abd4d5707510f8bbe5f2370c1231554dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fddb417ce9096fa092f0d89ddaf4b2c"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a0fddb417ce9096fa092f0d89ddaf4b2c">selectMessages</a> (int chatID, int limit=50)</td></tr>
+<tr class="memdesc:a0fddb417ce9096fa092f0d89ddaf4b2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод получения сообщений чата  <br /></td></tr>
+<tr class="separator:a0fddb417ce9096fa092f0d89ddaf4b2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae761d16f5b6f345e664a9682dc54022c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#ae761d16f5b6f345e664a9682dc54022c">insertInvite</a> (int senderID, QString receiver, int ChatID)</td></tr>
+<tr class="memdesc:ae761d16f5b6f345e664a9682dc54022c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод добавления приглашения.  <br /></td></tr>
+<tr class="separator:ae761d16f5b6f345e664a9682dc54022c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaee9ee6ad53da4f2bf78ff26be4cc0af"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#aaee9ee6ad53da4f2bf78ff26be4cc0af">selectInvite</a> (int userID)</td></tr>
+<tr class="memdesc:aaee9ee6ad53da4f2bf78ff26be4cc0af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод получения приглашений определенного пользователя  <br /></td></tr>
+<tr class="separator:aaee9ee6ad53da4f2bf78ff26be4cc0af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab95c3d3be7777cb6054527b41f9c6ba9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#ab95c3d3be7777cb6054527b41f9c6ba9">removeInvite</a> (int inviteID)</td></tr>
+<tr class="memdesc:ab95c3d3be7777cb6054527b41f9c6ba9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод удаления приглашения после ответа на него.  <br /></td></tr>
+<tr class="separator:ab95c3d3be7777cb6054527b41f9c6ba9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ee86a5b9602cbef908a3bed7c95643d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a3ee86a5b9602cbef908a3bed7c95643d">insertReport</a> (int userID, QString text)</td></tr>
+<tr class="memdesc:a3ee86a5b9602cbef908a3bed7c95643d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод добавления жалобы  <br /></td></tr>
+<tr class="separator:a3ee86a5b9602cbef908a3bed7c95643d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a535cb6f70d2f0ca14af25a335bfaadae"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a535cb6f70d2f0ca14af25a335bfaadae">selectReport</a> ()</td></tr>
+<tr class="memdesc:a535cb6f70d2f0ca14af25a335bfaadae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод получения всех доступных жалоб  <br /></td></tr>
+<tr class="separator:a535cb6f70d2f0ca14af25a335bfaadae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac02d645aba991b6a47b1a034ce1d1de5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#ac02d645aba991b6a47b1a034ce1d1de5">updateUser</a> (int userID, QString login, QString password, QString email, QString nickname)</td></tr>
+<tr class="memdesc:ac02d645aba991b6a47b1a034ce1d1de5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод обновления данных пользователя.  <br /></td></tr>
+<tr class="separator:ac02d645aba991b6a47b1a034ce1d1de5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Открытые статические члены</h2></td></tr>
-<tr class="memitem:aaa3deee8fd42b1b6aa577c77ac15f068"><td class="memItemLeft" align="right" valign="top"><a id="aaa3deee8fd42b1b6aa577c77ac15f068" name="aaa3deee8fd42b1b6aa577c77ac15f068"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>createDB</b> ()</td></tr>
-<tr class="memdesc:aaa3deee8fd42b1b6aa577c77ac15f068"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод инициализации экземпляра данного класса о открытия подключения к бд. <br /></td></tr>
-<tr class="separator:aaa3deee8fd42b1b6aa577c77ac15f068"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fea12bdde5c81b2290805163bfbfd40"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_d_b_worker.html">DBWorker</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a4fea12bdde5c81b2290805163bfbfd40">getInstance</a> ()</td></tr>
+<tr class="memdesc:a4fea12bdde5c81b2290805163bfbfd40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод получения экземпляра класса <a class="el" href="class_d_b_worker.html" title="Синглтон класс для взаимодействи с базой данных">DBWorker</a>.  <br /></td></tr>
+<tr class="separator:a4fea12bdde5c81b2290805163bfbfd40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add48ef4e14635926cce064c9425e0899"><td class="memItemLeft" align="right" valign="top"><a id="add48ef4e14635926cce064c9425e0899" name="add48ef4e14635926cce064c9425e0899"></a>
+static void&#160;</td><td class="memItemRight" valign="bottom"><b>open</b> ()</td></tr>
+<tr class="memdesc:add48ef4e14635926cce064c9425e0899"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод инициализации экземпляра данного класса о открытия подключения к бд. <br /></td></tr>
+<tr class="separator:add48ef4e14635926cce064c9425e0899"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d1cc6c0ca3282c5421f99154f52fa10"><td class="memItemLeft" align="right" valign="top"><a id="a7d1cc6c0ca3282c5421f99154f52fa10" name="a7d1cc6c0ca3282c5421f99154f52fa10"></a>
 static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</td></tr>
 <tr class="memdesc:a7d1cc6c0ca3282c5421f99154f52fa10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Закрытие соединения с базой данных. <br /></td></tr>
 <tr class="separator:a7d1cc6c0ca3282c5421f99154f52fa10"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab12e1f91c28cdf3cbb24c28417027778"><td class="memItemLeft" align="right" valign="top">static QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#ab12e1f91c28cdf3cbb24c28417027778">getUserNickname</a> (int userID)</td></tr>
-<tr class="memdesc:ab12e1f91c28cdf3cbb24c28417027778"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод получения никнейма пользователя по его ID.  <br /></td></tr>
-<tr class="separator:ab12e1f91c28cdf3cbb24c28417027778"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a941740e717ae34956d621b2fc666d717"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a941740e717ae34956d621b2fc666d717">insertUser</a> (QString login, QString password, QString email)</td></tr>
-<tr class="memdesc:a941740e717ae34956d621b2fc666d717"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод добавления пользователя в базу данных.  <br /></td></tr>
-<tr class="separator:a941740e717ae34956d621b2fc666d717"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeae03eecc85838bc583274d09ad664f3"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#aeae03eecc85838bc583274d09ad664f3">searchUser</a> (QString login, QString password)</td></tr>
-<tr class="memdesc:aeae03eecc85838bc583274d09ad664f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод проверки на существование пользователя.  <br /></td></tr>
-<tr class="separator:aeae03eecc85838bc583274d09ad664f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfedf4f036a0ad7f2f2fe34da661a409"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#acfedf4f036a0ad7f2f2fe34da661a409">getUserID</a> (QString login, QString password)</td></tr>
-<tr class="memdesc:acfedf4f036a0ad7f2f2fe34da661a409"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод получения ID пользователя.  <br /></td></tr>
-<tr class="separator:acfedf4f036a0ad7f2f2fe34da661a409"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a643f5c2d702d7781c2bbd482b31e3c56"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a643f5c2d702d7781c2bbd482b31e3c56">insertChat</a> (int userID, QString name, QString description)</td></tr>
-<tr class="memdesc:a643f5c2d702d7781c2bbd482b31e3c56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод создания чата.  <br /></td></tr>
-<tr class="separator:a643f5c2d702d7781c2bbd482b31e3c56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acbd0c94948ac56652b2be36017ff8b8b"><td class="memItemLeft" align="right" valign="top">static QMap&lt; int, QString &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#acbd0c94948ac56652b2be36017ff8b8b">selectUserChats</a> (int userID)</td></tr>
-<tr class="memdesc:acbd0c94948ac56652b2be36017ff8b8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод получения чатов пользователя.  <br /></td></tr>
-<tr class="separator:acbd0c94948ac56652b2be36017ff8b8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81ea396cd54927f3ebd09d74e2e138d5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a81ea396cd54927f3ebd09d74e2e138d5">leaveChat</a> (int userID, int chatID)</td></tr>
-<tr class="memdesc:a81ea396cd54927f3ebd09d74e2e138d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод выхода из чата.  <br /></td></tr>
-<tr class="separator:a81ea396cd54927f3ebd09d74e2e138d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03415efa3c8eb394d035140c65d0dd43"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a03415efa3c8eb394d035140c65d0dd43">addUserChat</a> (int userID, int chatID)</td></tr>
-<tr class="memdesc:a03415efa3c8eb394d035140c65d0dd43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод добавления пользователя в чат  <br /></td></tr>
-<tr class="separator:a03415efa3c8eb394d035140c65d0dd43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa20548b9df815244e4b565e911eda0b3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#aa20548b9df815244e4b565e911eda0b3">removeChat</a> (int chatID)</td></tr>
-<tr class="memdesc:aa20548b9df815244e4b565e911eda0b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод удаления чата.  <br /></td></tr>
-<tr class="separator:aa20548b9df815244e4b565e911eda0b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd4d5707510f8bbe5f2370c1231554dc"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#abd4d5707510f8bbe5f2370c1231554dc">insertMessage</a> (int userID, int chatID, QString text)</td></tr>
-<tr class="memdesc:abd4d5707510f8bbe5f2370c1231554dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод добавления сообщения.  <br /></td></tr>
-<tr class="separator:abd4d5707510f8bbe5f2370c1231554dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0fddb417ce9096fa092f0d89ddaf4b2c"><td class="memItemLeft" align="right" valign="top">static QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a0fddb417ce9096fa092f0d89ddaf4b2c">selectMessages</a> (int chatID, int limit=50)</td></tr>
-<tr class="memdesc:a0fddb417ce9096fa092f0d89ddaf4b2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод получения сообщений чата  <br /></td></tr>
-<tr class="separator:a0fddb417ce9096fa092f0d89ddaf4b2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae761d16f5b6f345e664a9682dc54022c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#ae761d16f5b6f345e664a9682dc54022c">insertInvite</a> (int senderID, QString receiver, int ChatID)</td></tr>
-<tr class="memdesc:ae761d16f5b6f345e664a9682dc54022c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод добавления приглашения.  <br /></td></tr>
-<tr class="separator:ae761d16f5b6f345e664a9682dc54022c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaee9ee6ad53da4f2bf78ff26be4cc0af"><td class="memItemLeft" align="right" valign="top">static QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#aaee9ee6ad53da4f2bf78ff26be4cc0af">selectInvite</a> (int userID)</td></tr>
-<tr class="memdesc:aaee9ee6ad53da4f2bf78ff26be4cc0af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод получения приглашений определенного пользователя  <br /></td></tr>
-<tr class="separator:aaee9ee6ad53da4f2bf78ff26be4cc0af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91e5fe99274b392f260edd0198a4b3be"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a91e5fe99274b392f260edd0198a4b3be">updateInvite</a> (int inviteID, bool answer)</td></tr>
-<tr class="memdesc:a91e5fe99274b392f260edd0198a4b3be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод обновления статуса приглашения.  <br /></td></tr>
-<tr class="separator:a91e5fe99274b392f260edd0198a4b3be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2265d07946f56b6d89ad38253f8a8820"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a2265d07946f56b6d89ad38253f8a8820">removeUserChat</a> (int userID, int chatID)</td></tr>
-<tr class="memdesc:a2265d07946f56b6d89ad38253f8a8820"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод удаления пользователя из чата.  <br /></td></tr>
-<tr class="separator:a2265d07946f56b6d89ad38253f8a8820"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ee86a5b9602cbef908a3bed7c95643d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a3ee86a5b9602cbef908a3bed7c95643d">insertReport</a> (int userID, QString text)</td></tr>
-<tr class="memdesc:a3ee86a5b9602cbef908a3bed7c95643d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод добавления жалобы  <br /></td></tr>
-<tr class="separator:a3ee86a5b9602cbef908a3bed7c95643d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a535cb6f70d2f0ca14af25a335bfaadae"><td class="memItemLeft" align="right" valign="top">static QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#a535cb6f70d2f0ca14af25a335bfaadae">selectReport</a> ()</td></tr>
-<tr class="memdesc:a535cb6f70d2f0ca14af25a335bfaadae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод получения всех доступных жалоб  <br /></td></tr>
-<tr class="separator:a535cb6f70d2f0ca14af25a335bfaadae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_static_methods_class_singleton"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_class_singleton')"><img src="closed.png" alt="-"/>&#160;Открытые статические члены унаследованные от <a class="el" href="class_singleton.html">Singleton</a></td></tr>
-<tr class="memitem:ae5cc005e947b0f851ea8db2d97123d66 inherit pub_static_methods_class_singleton"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_singleton.html">Singleton</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_singleton.html#ae5cc005e947b0f851ea8db2d97123d66">getInstance</a> ()</td></tr>
-<tr class="memdesc:ae5cc005e947b0f851ea8db2d97123d66 inherit pub_static_methods_class_singleton"><td class="mdescLeft">&#160;</td><td class="mdescRight">Метод получения экземпляра данного класса.  <br /></td></tr>
-<tr class="separator:ae5cc005e947b0f851ea8db2d97123d66 inherit pub_static_methods_class_singleton"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
-Дополнительные унаследованные члены</h2></td></tr>
-<tr class="inherit_header pro_methods_class_singleton"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_singleton')"><img src="closed.png" alt="-"/>&#160;Защищенные члены унаследованные от <a class="el" href="class_singleton.html">Singleton</a></td></tr>
-<tr class="memitem:a0e21dfc9afab45b0a6a70f6665ce5819 inherit pro_methods_class_singleton"><td class="memItemLeft" align="right" valign="top"><a id="a0e21dfc9afab45b0a6a70f6665ce5819" name="a0e21dfc9afab45b0a6a70f6665ce5819"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Singleton</b> ()</td></tr>
-<tr class="memdesc:a0e21dfc9afab45b0a6a70f6665ce5819 inherit pro_methods_class_singleton"><td class="mdescLeft">&#160;</td><td class="mdescRight">Конструктор класса <a class="el" href="class_singleton.html" title="Класс синглтона">Singleton</a>. <br /></td></tr>
-<tr class="separator:a0e21dfc9afab45b0a6a70f6665ce5819 inherit pro_methods_class_singleton"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5473e882cb01b29ea07c86faff0e407 inherit pro_methods_class_singleton"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_singleton.html#aa5473e882cb01b29ea07c86faff0e407">Singleton</a> (const <a class="el" href="class_singleton.html">Singleton</a> &amp;)=delete</td></tr>
-<tr class="memdesc:aa5473e882cb01b29ea07c86faff0e407 inherit pro_methods_class_singleton"><td class="mdescLeft">&#160;</td><td class="mdescRight">Блокировка конструктора копирования.  <br /></td></tr>
-<tr class="separator:aa5473e882cb01b29ea07c86faff0e407 inherit pro_methods_class_singleton"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33d4b57038f87a5b47605e6f1192ff0b inherit pro_methods_class_singleton"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_singleton.html">Singleton</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_singleton.html#a33d4b57038f87a5b47605e6f1192ff0b">operator=</a> (<a class="el" href="class_singleton.html">Singleton</a> &amp;)=delete</td></tr>
-<tr class="memdesc:a33d4b57038f87a5b47605e6f1192ff0b inherit pro_methods_class_singleton"><td class="mdescLeft">&#160;</td><td class="mdescRight">Блокировка оператора равно (=).  <br /></td></tr>
-<tr class="separator:a33d4b57038f87a5b47605e6f1192ff0b inherit pro_methods_class_singleton"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Защищенные члены</h2></td></tr>
+<tr class="memitem:a5fdb30f8be68f16762b3557a28e76e81"><td class="memItemLeft" align="right" valign="top"><a id="a5fdb30f8be68f16762b3557a28e76e81" name="a5fdb30f8be68f16762b3557a28e76e81"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>DBWorker</b> ()</td></tr>
+<tr class="memdesc:a5fdb30f8be68f16762b3557a28e76e81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Конструктор класса Singleton. <br /></td></tr>
+<tr class="separator:a5fdb30f8be68f16762b3557a28e76e81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf16352f3b2c1aa2ac653a08671b1baf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#adf16352f3b2c1aa2ac653a08671b1baf">DBWorker</a> (const <a class="el" href="class_d_b_worker.html">DBWorker</a> &amp;)=delete</td></tr>
+<tr class="memdesc:adf16352f3b2c1aa2ac653a08671b1baf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Блокировка конструктора копирования.  <br /></td></tr>
+<tr class="separator:adf16352f3b2c1aa2ac653a08671b1baf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abbb2fa042c67601e8089af84d1a15174"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_d_b_worker.html">DBWorker</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#abbb2fa042c67601e8089af84d1a15174">operator=</a> (<a class="el" href="class_d_b_worker.html">DBWorker</a> &amp;)=delete</td></tr>
+<tr class="memdesc:abbb2fa042c67601e8089af84d1a15174"><td class="mdescLeft">&#160;</td><td class="mdescRight">Блокировка оператора равно (=).  <br /></td></tr>
+<tr class="separator:abbb2fa042c67601e8089af84d1a15174"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
+Друзья</h2></td></tr>
+<tr class="memitem:aa93ce997b9645496c0e17460fba08432"><td class="memItemLeft" align="right" valign="top"><a id="aa93ce997b9645496c0e17460fba08432" name="aa93ce997b9645496c0e17460fba08432"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_d_b_worker.html#aa93ce997b9645496c0e17460fba08432">SingletonDestroyer</a></td></tr>
+<tr class="memdesc:aa93ce997b9645496c0e17460fba08432"><td class="mdescLeft">&#160;</td><td class="mdescRight">Предоставление доступа классу <a class="el" href="class_singleton_destroyer.html" title="Класс синглтон дестроера">SingletonDestroyer</a>. <br /></td></tr>
+<tr class="separator:aa93ce997b9645496c0e17460fba08432"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
 <div class="textblock"><p>Синглтон класс для взаимодействи с базой данных </p>
-</div><h2 class="groupheader">Методы</h2>
-<a id="a03415efa3c8eb394d035140c65d0dd43" name="a03415efa3c8eb394d035140c65d0dd43"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03415efa3c8eb394d035140c65d0dd43">&#9670;&#160;</a></span>addUserChat()</h2>
+</div><h2 class="groupheader">Конструктор(ы)</h2>
+<a id="adf16352f3b2c1aa2ac653a08671b1baf" name="adf16352f3b2c1aa2ac653a08671b1baf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf16352f3b2c1aa2ac653a08671b1baf">&#9670;&#160;</a></span>DBWorker()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">DBWorker::DBWorker </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_d_b_worker.html">DBWorker</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Блокировка конструктора копирования. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Методы</h2>
+<a id="a03415efa3c8eb394d035140c65d0dd43" name="a03415efa3c8eb394d035140c65d0dd43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03415efa3c8eb394d035140c65d0dd43">&#9670;&#160;</a></span>addUserChat()</h2>
+
+<div class="memitem">
+<div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void DBWorker::addUserChat </td>
@@ -200,11 +231,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Метод добавления пользователя в чат </p>
@@ -218,14 +244,77 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
 
 </div>
 </div>
-<a id="acfedf4f036a0ad7f2f2fe34da661a409" name="acfedf4f036a0ad7f2f2fe34da661a409"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acfedf4f036a0ad7f2f2fe34da661a409">&#9670;&#160;</a></span>getUserID()</h2>
+<a id="a4c1ef351e8a8a0703b202034da9122c2" name="a4c1ef351e8a8a0703b202034da9122c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c1ef351e8a8a0703b202034da9122c2">&#9670;&#160;</a></span>authUser()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DBWorker::authUser </td>
+          <td>(</td>
+          <td class="paramtype">QString&#160;</td>
+          <td class="paramname"><em>login</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QString&#160;</td>
+          <td class="paramname"><em>password</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Метод проверки на существование пользователя. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">login</td><td>- логин</td></tr>
+    <tr><td class="paramname">passwrod</td><td>- пароль</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>Если пользователь найдет, то вернет true иначе false</dd></dl>
+
+</div>
+</div>
+<a id="a4fea12bdde5c81b2290805163bfbfd40" name="a4fea12bdde5c81b2290805163bfbfd40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4fea12bdde5c81b2290805163bfbfd40">&#9670;&#160;</a></span>getInstance()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_d_b_worker.html">DBWorker</a> * DBWorker::getInstance </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Метод получения экземпляра класса <a class="el" href="class_d_b_worker.html" title="Синглтон класс для взаимодействи с базой данных">DBWorker</a>. </p>
+<dl class="section return"><dt>Возвращает</dt><dd>класс <a class="el" href="class_d_b_worker.html" title="Синглтон класс для взаимодействи с базой данных">DBWorker</a></dd></dl>
+
+</div>
+</div>
+<a id="acfedf4f036a0ad7f2f2fe34da661a409" name="acfedf4f036a0ad7f2f2fe34da661a409"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acfedf4f036a0ad7f2f2fe34da661a409">&#9670;&#160;</a></span>getUserID()</h2>
+
+<div class="memitem">
+<div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">int DBWorker::getUserID </td>
@@ -245,11 +334,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Метод получения ID пользователя. </p>
@@ -269,9 +353,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">QString DBWorker::getUserNickname </td>
@@ -281,11 +362,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Метод получения никнейма пользователя по его ID. </p>
@@ -304,9 +380,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void DBWorker::insertChat </td>
@@ -332,11 +405,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Метод создания чата. </p>
@@ -356,9 +424,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void DBWorker::insertInvite </td>
@@ -384,11 +449,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Метод добавления приглашения. </p>
@@ -408,9 +468,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void DBWorker::insertMessage </td>
@@ -436,11 +493,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Метод добавления сообщения. </p>
@@ -460,9 +512,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void DBWorker::insertReport </td>
@@ -482,11 +531,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Метод добавления жалобы </p>
@@ -505,9 +549,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool DBWorker::insertUser </td>
@@ -533,11 +574,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Метод добавления пользователя в базу данных. </p>
@@ -558,9 +594,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void DBWorker::leaveChat </td>
@@ -580,11 +613,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Метод выхода из чата. </p>
@@ -598,14 +626,40 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
 
 </div>
 </div>
-<a id="aa20548b9df815244e4b565e911eda0b3" name="aa20548b9df815244e4b565e911eda0b3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa20548b9df815244e4b565e911eda0b3">&#9670;&#160;</a></span>removeChat()</h2>
+<a id="abbb2fa042c67601e8089af84d1a15174" name="abbb2fa042c67601e8089af84d1a15174"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abbb2fa042c67601e8089af84d1a15174">&#9670;&#160;</a></span>operator=()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_d_b_worker.html">DBWorker</a> &amp; DBWorker::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_d_b_worker.html">DBWorker</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Блокировка оператора равно (=). </p>
+<dl class="section return"><dt>Возвращает</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="aa20548b9df815244e4b565e911eda0b3" name="aa20548b9df815244e4b565e911eda0b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa20548b9df815244e4b565e911eda0b3">&#9670;&#160;</a></span>removeChat()</h2>
+
+<div class="memitem">
+<div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void DBWorker::removeChat </td>
@@ -615,11 +669,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Метод удаления чата. </p>
@@ -632,90 +681,52 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
 
 </div>
 </div>
-<a id="a2265d07946f56b6d89ad38253f8a8820" name="a2265d07946f56b6d89ad38253f8a8820"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2265d07946f56b6d89ad38253f8a8820">&#9670;&#160;</a></span>removeUserChat()</h2>
+<a id="ab95c3d3be7777cb6054527b41f9c6ba9" name="ab95c3d3be7777cb6054527b41f9c6ba9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab95c3d3be7777cb6054527b41f9c6ba9">&#9670;&#160;</a></span>removeInvite()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void DBWorker::removeUserChat </td>
+          <td class="memname">void DBWorker::removeInvite </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>userID</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>inviteID</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>chatID</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>Метод удаления пользователя из чата. </p>
+<p>Метод удаления приглашения после ответа на него. </p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">userID</td><td>- ID Удаляемого пользователя</td></tr>
-    <tr><td class="paramname">chatID</td><td>- ID чата из которого удаляется</td></tr>
+    <tr><td class="paramname">inviteID</td><td>- ID приглашения</td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="aeae03eecc85838bc583274d09ad664f3" name="aeae03eecc85838bc583274d09ad664f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeae03eecc85838bc583274d09ad664f3">&#9670;&#160;</a></span>searchUser()</h2>
+<a id="a375af4c6a5a86b0669546a9dabbc0ec7" name="a375af4c6a5a86b0669546a9dabbc0ec7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a375af4c6a5a86b0669546a9dabbc0ec7">&#9670;&#160;</a></span>searchUser()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool DBWorker::searchUser </td>
           <td>(</td>
           <td class="paramtype">QString&#160;</td>
-          <td class="paramname"><em>login</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>login</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">QString&#160;</td>
-          <td class="paramname"><em>password</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Метод проверки на существование пользователя. </p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
     <tr><td class="paramname">login</td><td>- логин</td></tr>
-    <tr><td class="paramname">password</td><td>- пароль</td></tr>
   </table>
   </dd>
 </dl>
@@ -728,9 +739,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">QString DBWorker::selectInvite </td>
@@ -740,11 +748,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Метод получения приглашений определенного пользователя </p>
@@ -763,9 +766,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">QString DBWorker::selectMessages </td>
@@ -785,11 +785,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Метод получения сообщений чата </p>
@@ -809,9 +804,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">QString DBWorker::selectReport </td>
@@ -820,11 +812,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Метод получения всех доступных жалоб </p>
@@ -837,9 +824,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">QMap&lt; int, QString &gt; DBWorker::selectUserChats </td>
@@ -849,11 +833,6 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Метод получения чатов пользователя. </p>
@@ -867,26 +846,41 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
 
 </div>
 </div>
-<a id="a91e5fe99274b392f260edd0198a4b3be" name="a91e5fe99274b392f260edd0198a4b3be"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a91e5fe99274b392f260edd0198a4b3be">&#9670;&#160;</a></span>updateInvite()</h2>
+<a id="ac02d645aba991b6a47b1a034ce1d1de5" name="ac02d645aba991b6a47b1a034ce1d1de5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac02d645aba991b6a47b1a034ce1d1de5">&#9670;&#160;</a></span>updateUser()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void DBWorker::updateInvite </td>
+          <td class="memname">bool DBWorker::updateUser </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>inviteID</em>, </td>
+          <td class="paramname"><em>userID</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>answer</em>&#160;</td>
+          <td class="paramtype">QString&#160;</td>
+          <td class="paramname"><em>login</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QString&#160;</td>
+          <td class="paramname"><em>password</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QString&#160;</td>
+          <td class="paramname"><em>email</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QString&#160;</td>
+          <td class="paramname"><em>nickname</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -894,21 +888,20 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>Метод обновления статуса приглашения. </p>
+<p>Метод обновления данных пользователя. </p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">inviteID</td><td>- ID приглашения</td></tr>
-    <tr><td class="paramname">answer</td><td>- ответ в виде true или false</td></tr>
+    <tr><td class="paramname">userID</td><td>- ID пользователя</td></tr>
+    <tr><td class="paramname">login</td><td>- строка логина</td></tr>
+    <tr><td class="paramname">password</td><td>- строка пароля</td></tr>
+    <tr><td class="paramname">email</td><td>- строка почты</td></tr>
+    <tr><td class="paramname">nickname</td><td>- строка никнейма</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Возвращает</dt><dd></dd></dl>
 
 </div>
 </div>

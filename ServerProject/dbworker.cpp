@@ -1,22 +1,20 @@
-#include <DBWorker.h>
+#include "DBWorker.h"
 
 
 void DBWorker::open() {
-	QString path = "";
+	if (!DBWorker::getInstance()->db.isOpen()) {
+		QString path = "";
 #ifdef DEBUG
-	path = "C:/Users/rustv/Documents/QtProjects/Egg-Chat/ServerProject/";
-	qDebug() << "DEBUG mode";
+		path = "C:/Users/rustv/Documents/QtProjects/Egg-Chat/ServerProject/";
+		qDebug() << "DEBUG mode";
 #endif
-	db = QSqlDatabase::addDatabase("QSQLITE");
-	db.setDatabaseName(path + "sqlite.db");
-	if (!db.open()) qDebug() << db.lastError().text();
-}
-void DBWorker::createDB() {
-	getInstance();
-	if (!db.isOpen()) open();
+		DBWorker::getInstance()->db = QSqlDatabase::addDatabase("QSQLITE");
+		DBWorker::getInstance()->db.setDatabaseName(path + "sqlite.db");
+		if (!DBWorker::getInstance()->db.open()) qDebug() << DBWorker::getInstance()->db.lastError().text();
+	}
 }
 void DBWorker::close() {
-	if (db.isOpen()) db.close();
+	if (DBWorker::getInstance()->db.isOpen()) DBWorker::getInstance()->db.close();
 }
 QString DBWorker::getUserNickname(int userID) {
 	QSqlQuery query = QSqlQuery(db);
@@ -50,7 +48,7 @@ bool DBWorker::searchUser(QString login) {
 	}
 	return isExist;
 }
-bool DBWorker::authUser(QString login, QString password){
+bool DBWorker::authUser(QString login, QString password) {
 	QSqlQuery query = QSqlQuery(db);
 	query.prepare("select * from users where login = ? and password = ?");
 	query.addBindValue(login);
@@ -201,4 +199,22 @@ bool DBWorker::updateUser(int userID, QString login, QString password, QString e
 	query.exec();
 	return !query.lastError().isValid();
 }
-QSqlDatabase DBWorker::db;
+//QSqlDatabase DBWorker::db;
+SingletonDestroyer::~SingletonDestroyer(){
+    delete p_instance;
+}
+void SingletonDestroyer::init(DBWorker* p){
+    p_instance = p;
+}
+
+DBWorker* DBWorker::getInstance(){
+    if (!p_instance){
+        p_instance = new DBWorker();
+        destroyer.init(p_instance);
+    }
+    return p_instance;
+}
+
+DBWorker* DBWorker::p_instance;
+SingletonDestroyer DBWorker::destroyer;
+DBWorker* SingletonDestroyer::p_instance;

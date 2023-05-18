@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['read_0',['Read',['../class_client.html#ab16b86ffce8e264f09b8ccc9e0948c60',1,'Client']]],
-  ['removechat_1',['removeChat',['../class_d_b_worker.html#aa20548b9df815244e4b565e911eda0b3',1,'DBWorker']]],
-  ['removeuserchat_2',['removeUserChat',['../class_d_b_worker.html#a2265d07946f56b6d89ad38253f8a8820',1,'DBWorker']]]
+  ['onclosing_0',['OnClosing',['../class_client.html#a13c006314a6feca4892481e25425fc7c',1,'Client']]],
+  ['open_1',['open',['../class_d_b_worker.html#add48ef4e14635926cce064c9425e0899',1,'DBWorker']]],
+  ['operator_3d_2',['operator=',['../class_d_b_worker.html#abbb2fa042c67601e8089af84d1a15174',1,'DBWorker']]]
 ];
