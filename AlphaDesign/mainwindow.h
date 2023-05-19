@@ -13,6 +13,7 @@
 #include "chat.h"
 #include "invite.h"
 
+
 class server;
 class MainWindow;
 
@@ -33,6 +34,9 @@ public:
     void init(server * p){ p_instance = p; };
 };
 
+/*!
+ * \brief Класс сервера по паттерну SingleTon
+ */
 class server : public QObject{
     Q_OBJECT
 private:
