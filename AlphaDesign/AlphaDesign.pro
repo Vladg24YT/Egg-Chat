@@ -12,14 +12,12 @@ SOURCES += \
     chat.cpp \
     invite.cpp \
     main.cpp \
-    mainwindow.cpp \
-    server.cpp
+    mainwindow.cpp
 
 HEADERS += \
     chat.h \
     invite.h \
-    mainwindow.h \
-    server.h
+    mainwindow.h
 
 FORMS += \
     mainwindow.ui

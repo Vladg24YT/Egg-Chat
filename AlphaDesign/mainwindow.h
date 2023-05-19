@@ -42,13 +42,30 @@ private:
     QTcpSocket * socket;
 
 protected:
+    /*!
+     * \brief server
+     * Конструктор по умолчанию
+     * \param parent
+     * Родитель
+     */
     explicit server(QObject * parent = nullptr);
     server(const server&) = delete;
     server& operator = (server &) = delete;
     //~server();
     friend class destroyer;
     friend class MainWindow;
+    /*!
+     * \brief ptr
+     * Ссылка экземпляр класса MainWindow <br>
+     * для удобного общения с ним
+     */
     MainWindow * ptr;
+    /*!
+     * \brief parser
+     * Парсит строку по |
+     * \param [QString]line
+     * Берет строку на вход
+     */
     void parser(QString line);
 public:
     /*!
