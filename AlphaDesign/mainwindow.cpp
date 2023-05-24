@@ -466,6 +466,8 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         server::getInstance()->socket->write("chat|get");
     }
     else if (index == 3){
+        ui->NotifList->clear();
+        invites.clear();
         server::getInstance()->socket->write("invite|get");
     }
 }
