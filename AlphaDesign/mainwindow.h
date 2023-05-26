@@ -8,6 +8,7 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <vector>
+//#include <QtTest/QTest>
 
 
 #include "chat.h"
@@ -104,6 +105,7 @@ class MainWindow : public QMainWindow
          passChange = true, newChatCreate = true, // false - chatting, true - creating new chat
          invNewUserMode = true,
          loginedUser = false; // вошел ли юзер в аккаунт
+    void sendToServer(QString);
 
 public:
     /*!
