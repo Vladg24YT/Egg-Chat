@@ -1,4 +1,4 @@
-#include "client.h"
+﻿#include "client.h"
 
 #include <QList>
 
@@ -186,8 +186,8 @@ void Client::getChats() {
 }
 void Client::Send(QString text) {
 	qDebug() << "[SERVER] Send to client with id =" << id << ": " << text;
-	Socket->write(text.toUtf8());
-	QTest::qSleep(10);
+	Socket->write(text.toUtf8() + "~");
+	QTest::qSleep(50);
 }
 void Client::logout() {
 	qDebug() << "[SERVER]" << id << "logout";
