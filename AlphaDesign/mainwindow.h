@@ -10,7 +10,7 @@
 #include <vector>
 //#include <QtTest/QTest>
 
-
+#include "client.h"
 #include "chat.h"
 #include "invite.h"
 
@@ -137,6 +137,7 @@ private slots:
     void on_InviteDecline_clicked();
 
 private:
+    client currentClient;
     QString homeDir;
     QMap<QString, chat> chats;
     QMap<QString, invite> invites;
@@ -145,6 +146,7 @@ private:
     void readData();
     void writeData(int stat);
 
+    void getProfileInfo();
     void changeMode();
     void changePassMode();
     void changeEmailMode();
@@ -155,6 +157,8 @@ private:
     void changeConnectStat(bool setTo);
     void createNewChat();
     void setLoginTabEnable(bool setTo);
+    void displayClientInfo(client toDisp);
+    void changeCurUserInfo(client newClient);
 
     Ui::MainWindow *ui;
 };

@@ -10,12 +10,14 @@ CONFIG += c++17
 
 SOURCES += \
     chat.cpp \
+    client.cpp \
     invite.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     chat.h \
+    client.h \
     invite.h \
     mainwindow.h
 

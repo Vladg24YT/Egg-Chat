@@ -27,6 +27,7 @@ void server::parser(QString line)
     {
         if (words[0] == "OK"){
             ptr->writeData(ptr->ui->checkBox->isChecked() ? 1 : 0);
+            ptr->getProfileInfo();
             ptr->changeAccountStatus(true);
         }
         else if (words[0] == "BAD"){
@@ -77,6 +78,15 @@ void server::parser(QString line)
         invite ni = invite(words[1], words[2], words[3], words[4]);
         ptr->ui->NotifList->addItem(ni.toString());
         ptr->ui->NotifList->item(ptr->ui->NotifList->count() - 1)->setToolTip(words[1]);
+    }
+    else if (words[0] == "profile" and words.size() >= 4){
+        QString pwd;
+        if (ptr->currentClient.getPass().size() > 0)
+            pwd = ptr->currentClient.getPass();
+        else
+            pwd = ptr->ui->PassLine->text();
+        ptr->currentClient = client(words[1], words[2], pwd, words[3]);
+        ptr->displayClientInfo(ptr->currentClient);
     }
 
 }
@@ -254,18 +264,33 @@ void MainWindow::on_SignButton_clicked()
 
 void MainWindow::on_ChangePassBtn_clicked()
 {
+    if (passChange){
+        if (ui->NewPassLine->text() == ui->NewPassLine_2->text() and
+            currentClient.getPass() == ui->oldPassLine->text()){
+            client newData = client(currentClient.getLogin(), currentClient.getEmail(), ui->NewPassLine->text() ,currentClient.getNick());
+            changeCurUserInfo(newData);
+        }
+    }
     changePassMode();
 }
 
 
 void MainWindow::on_ChangeEmailBtn_clicked()
 {
+    if (emailChange){
+        client newData = client(currentClient.getLogin(), ui->NewEmailLine->text(), currentClient.getPass(), currentClient.getNick());
+        changeCurUserInfo(newData);
+    }
     changeEmailMode();
 }
 
 
 void MainWindow::on_changeLoginBtn_clicked()
 {
+    if (loginChange){
+        client newData = client(ui->NewLogin->text(), currentClient.getEmail(), currentClient.getPass(), currentClient.getNick());
+        changeCurUserInfo(newData);
+    }
     changeLoginMode();
 }
 
@@ -287,6 +312,12 @@ void MainWindow::on_logoutBtn_clicked()
     ui->listWidget->clear();
     ui->NotifList->clear();
     ui->ChatBrowser->clear();
+    ui->NewLogin->clear();
+    ui->NewEmailLine->clear();
+    ui->oldPassLine->clear();
+    ui->NewPassLine->clear();
+    ui->NewPassLine_2->clear();
+    ui->InvUserIDLine->clear();
 }
 
 
@@ -360,6 +391,17 @@ void MainWindow::setLoginTabEnable(bool setTo)
     ui->checkBox->setEnabled(setTo);
 }
 
+void MainWindow::displayClientInfo(client toDisp)
+{
+    ui->AccountLoginLabel->setText(toDisp.getLogin());
+    ui->AccountEmalLabel->setText(toDisp.getEmail());
+}
+
+void MainWindow::changeCurUserInfo(client newClient)
+{
+    sendToServer("profile|update|" + newClient.toString());
+}
+
 void MainWindow::readData()
 {
     qDebug() << "Reading data from file";
@@ -403,6 +445,11 @@ void MainWindow::writeData(int stat)
         out << dt;
         file.close();
     }
+}
+
+void MainWindow::getProfileInfo()
+{
+    sendToServer("profile|get");
 }
 
 void MainWindow::on_pushButton_clicked()
