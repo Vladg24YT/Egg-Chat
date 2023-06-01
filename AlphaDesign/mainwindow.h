@@ -71,6 +71,7 @@ protected:
      * \param [QString]line
      * Берет строку на вход
      */
+    void preParser(QString line);
     void parser(QString line);
 public:
     /*!

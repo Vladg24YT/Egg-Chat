@@ -10,8 +10,15 @@ server::server(QObject *parent) : QObject(parent)
             this, &server::readSocket);
 }
 
+void server::preParser(QString line)
+{
+    for (QString l : line.split("~"))
+        parser(l);
+}
+
 void server::parser(QString line)
 {
+    if (line.size() == 0) return;
     qDebug() << "[IN] " << line;
 
     std::vector<QString> words;
@@ -108,7 +115,7 @@ void server::readSocket()
         msg.append(socket->readAll());
     }
 
-    parser(msg);
+    preParser(msg);
 }
 
 server* server::p_instance;
