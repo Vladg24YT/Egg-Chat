@@ -188,6 +188,12 @@ public:
 	/// <param name="nickname">- строка никнейма</param>
 	/// <returns></returns>
 	bool updateUser(int userID, QString login, QString password, QString email, QString nickname);
+	/// <summary>
+	/// Метод получения всей информации о пользователе.
+	/// </summary>
+	/// <param name="userID">- ID пользователя</param>
+	/// <returns>Возвращает строку содержащуюю логин, почту, и никнейм</returns>
+	QString getFullUser(int userID);
 };
 
 #endif // DBWORKER_H

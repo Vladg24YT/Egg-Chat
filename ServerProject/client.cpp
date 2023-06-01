@@ -33,6 +33,13 @@ void Client::parser(QString line) {
 		}
 		return Send("Invalid chat command!");
 	}
+	if (words[0] == "profile") {
+		if (words.size() > 1) {
+			if (words[1] == "get") return getProfile();
+			if (words[1] == "update") return updateProfile(words);
+		}
+		return Send("Invalid profile command!");
+	}
 	if (words[0] == "invite") {
 		if (words.size() > 1) {
 			if (words[1] == "get") return getInvite();
@@ -54,13 +61,13 @@ void Client::parser(QString line) {
 void Client::Read() {
 	while (Socket->bytesAvailable() > 0) {
 		QByteArray command = Socket->readAll();
-		qDebug() << "[CLIENT] " << command;
+		qDebug() << "[CLIENT]" << command;
 		parser(command);
 	}
 }
 void Client::login(std::vector<QString> words) {
 	if (words.size() != 3 || (words[1] == "" || words[2] == ""))
-		return Send("Wrong login or password!");
+		return Send("BAD");
 	else {
 		isAuth = DBWorker::getInstance()->authUser(words[1], words[2]);
 		if (isAuth) {
@@ -72,7 +79,7 @@ void Client::login(std::vector<QString> words) {
 }
 void Client::registration(std::vector<QString> words) {
 	if (words.size() != 4 || (words[1] == "" || words[2] == "" || words[3] == ""))
-		Send("Wrong data!");
+		Send("BAD");
 	else {
 		bool isExist = DBWorker::getInstance()->searchUser(words[1]);
 		if (!isExist) {
@@ -127,12 +134,12 @@ void Client::ansewerInvite(std::vector<QString> words) {
 		if (words[2] != "" && words[3] != "" && words[4] != "") {
 			bool answer = words[4].toInt();
 			if (answer) {
-				DBWorker::getInstance()->addUserChat(id, words[3].toInt());
+				DBWorker::getInstance()->addUserChat(id, words[2].toInt());
 				Chats.append(words[3].toInt());
 				getChats();
 			}
-			getInvite();
-			return DBWorker::getInstance()->removeInvite(words[2].toInt());
+			DBWorker::getInstance()->removeInvite(words[2].toInt());
+			return getInvite();
 		}
 	return Send("Invalid invite command!");
 }
@@ -149,6 +156,18 @@ void Client::sendReport(std::vector<QString> words) {
 	if (words.size() == 4)
 		if (words[2] != "" && words[3] != "") return DBWorker::getInstance()->insertReport(words[2].toInt(), words[3]);
 	return Send("Invalid report command!");
+}
+void Client::getProfile() {
+	if (isAuth)
+		Send("profile|" + DBWorker::getInstance()->getFullUser(id));
+	else
+		Send("BAD");
+}
+void Client::updateProfile(std::vector<QString> words) {
+	if (isAuth && words.size() == 6) {
+		if (DBWorker::getInstance()->updateUser(id, words[2], words[3], words[4], words[5]))
+			getProfile();
+	}
 }
 void Client::getReport() {
 	QString response = "reportlist|" + DBWorker::getInstance()->selectReport();
@@ -168,6 +187,7 @@ void Client::getChats() {
 void Client::Send(QString text) {
 	qDebug() << "[SERVER] Send to client with id =" << id << ": " << text;
 	Socket->write(text.toUtf8());
+	QTest::qSleep(10);
 }
 void Client::logout() {
 	qDebug() << "[SERVER]" << id << "logout";

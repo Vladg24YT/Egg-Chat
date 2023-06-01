@@ -28,6 +28,8 @@ QString DBWorker::getUserNickname(int userID) {
 	return "";
 }
 bool DBWorker::insertUser(QString login, QString password, QString email) {
+	if (login.isEmpty() || password.isEmpty() || email.isEmpty())
+		return false;
 	QSqlQuery query = QSqlQuery(db);
 	query.prepare("insert into users (login, password, nickname, email) values (?, ?, ?, ?) ");
 	query.addBindValue(login);
@@ -49,6 +51,8 @@ bool DBWorker::searchUser(QString login) {
 	return isExist;
 }
 bool DBWorker::authUser(QString login, QString password) {
+	if (login.isEmpty() || password.isEmpty())
+		return false;
 	QSqlQuery query = QSqlQuery(db);
 	query.prepare("select * from users where login = ? and password = ?");
 	query.addBindValue(login);
@@ -189,6 +193,8 @@ QString DBWorker::selectReport() {
 	return response;
 }
 bool DBWorker::updateUser(int userID, QString login, QString password, QString email, QString nickname) {
+	if (login.isEmpty() || password.isEmpty() || email.isEmpty() || nickname.isEmpty())
+		return false;
 	QSqlQuery query = QSqlQuery(db);
 	query.prepare("update users set login = ?, password = ?, email = ?, nickname = ? where id = ?");
 	query.addBindValue(login);
@@ -199,7 +205,19 @@ bool DBWorker::updateUser(int userID, QString login, QString password, QString e
 	query.exec();
 	return !query.lastError().isValid();
 }
-//QSqlDatabase DBWorker::db;
+QString DBWorker::getFullUser(int userID){
+	QSqlQuery query = QSqlQuery(db);
+	QString response;
+	query.prepare("select login, email, nickname from users where id = ? limit 1");
+	query.addBindValue(userID);
+	query.exec();
+	while (query.next()) {
+		QSqlRecord rec = query.record();
+		response += query.value(0).toString() + '|' + query.value(1).toString() + '|' + query.value(2).toString();
+		if (!query.last()) response += '|';
+	}
+	return response;
+}
 SingletonDestroyer::~SingletonDestroyer(){
     delete p_instance;
 }

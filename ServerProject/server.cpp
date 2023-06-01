@@ -7,10 +7,10 @@ Server::Server(QObject* parent) : QObject{ parent }{
 	connect(TcpServer, &QTcpServer::newConnection, this, &Server::slotNewConnection);
 
 	if (!TcpServer->listen(QHostAddress::Any, 34197)) {
-		qDebug() << "[SERVER] Server is not started";
+		qDebug() << "\033[31m[SERVER] Server is not started\033[0m";
 	}
 	else {
-		qDebug() << "[SERVER] Server is started";
+		qDebug() << "\033[32m[SERVER] Server is started\033[0m";
 	}
 }
 void Server::slotNewConnection() {
@@ -45,7 +45,7 @@ void Server::slotKick(int userID, QString command) {
 void Server::slotRemove(Client* client) {
 	Clients.remove(client->GetDescriptor());
 	client->Socket->close();
-	qDebug() << "[SERVER] Client disconnected";
+	qDebug() << "\033[33m[SERVER] Client disconnected\033[0m";
 }
 Server::~Server() {
 	foreach(Client * clnt, Clients) {

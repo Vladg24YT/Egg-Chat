@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <string>
+#include <QtTest/qtest.h>
 #include "DBWorker.h"
 
 /// <summary>
@@ -92,6 +93,8 @@ private:
 	void ansewerInvite(std::vector<QString> words);
 	void kickUser(std::vector<QString> words);
 	void sendReport(std::vector<QString> words);
+	void getProfile();
+	void updateProfile(std::vector<QString> words);
 	void getReport();
 };
 #endif // CLIENT_H
