@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <string>
-#include <QtTest/qtest.h>
 #include "DBWorker.h"
 
 /// <summary>

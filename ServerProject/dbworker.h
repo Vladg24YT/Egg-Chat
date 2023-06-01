@@ -10,7 +10,7 @@
 #include <QList>
 //#include <singleton.h>
 //переключение режима, для запуска на винде или в докере
-#define DEBUG
+//#define DEBUG
 class DBWorker;
 /// <summary>
 /// Класс синглтон дестроера

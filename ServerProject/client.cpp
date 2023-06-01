@@ -105,7 +105,7 @@ void Client::leaveChat(std::vector<QString> words) {
 			DBWorker::getInstance()->leaveChat(id, words[2].toInt());
 			emit Kick(words[1].toInt(), "kick|" + words[2]);
 			int index = Chats.indexOf(words[2].toInt());
-			if (index == -1) Chats.remove(index);
+			if (index == -1) Chats.removeAt(index);
 			return;
 		}
 	return Send("Invalid chat command!");
@@ -115,7 +115,7 @@ void Client::removeChat(std::vector<QString> words) {
 		if (words[2] != "") {
 			DBWorker::getInstance()->removeChat(words[2].toInt());
 			int index = Chats.indexOf(words[2].toInt());
-			if (index == -1) return Chats.remove(index);
+			if (index == -1) return Chats.removeAt(index);
 			return;
 		}
 	return Send("Invalid chat command!");
@@ -187,7 +187,6 @@ void Client::getChats() {
 void Client::Send(QString text) {
 	qDebug() << "[SERVER] Send to client with id =" << id << ": " << text;
 	Socket->write(text.toUtf8() + "~");
-	QTest::qSleep(50);
 }
 void Client::logout() {
 	qDebug() << "[SERVER]" << id << "logout";

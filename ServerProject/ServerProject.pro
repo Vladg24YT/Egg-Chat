@@ -11,8 +11,7 @@ SOURCES += \
         dbworker.cpp \
         client.cpp \
         main.cpp \
-        server.cpp \
-        singleton.cpp
+        server.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -22,5 +21,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     dbworker.h \
     client.h \
-    server.h \
-    singleton.h
+    server.h
