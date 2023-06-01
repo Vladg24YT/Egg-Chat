@@ -12,7 +12,8 @@ server::server(QObject *parent) : QObject(parent)
 
 void server::parser(QString line)
 {
-    qDebug() << line;
+    qDebug() << "[IN] " << line;
+
     std::vector<QString> words;
     for (QString word : line.split("|")) words.push_back(word);
     if (words.size() <= 0) return;
@@ -26,6 +27,7 @@ void server::parser(QString line)
     {
         if (words[0] == "OK"){
             ptr->writeData(ptr->ui->checkBox->isChecked() ? 1 : 0);
+            ptr->getProfileInfo();
             ptr->changeAccountStatus(true);
         }
         else if (words[0] == "BAD"){
@@ -33,13 +35,15 @@ void server::parser(QString line)
             ptr->setLoginTabEnable(true);
         }
     }
-    if (words[0] == "chatlist" and words.size() >= 5){
+    if (words[0] == "chatlist"){
         ptr->ui->listWidget->clear();
         ptr->chats.clear();
         ptr->ui->ChatBrowser->clear();
-        for (int i = 1; i < words.size(); i += 4){
-            ptr->ui->listWidget->addItem(words[i+2]);
-            ptr->ui->listWidget->item(ptr->ui->listWidget->count() - 1)->setToolTip(words[i]);
+        if (words.size() >= 5){
+            for (int i = 1; i < words.size(); i += 4){
+                ptr->ui->listWidget->addItem(words[i+2]);
+                ptr->ui->listWidget->item(ptr->ui->listWidget->count() - 1)->setToolTip(words[i]);
+            }
         }
     }
     else if (words[0] == "messagelist" and words.size() >= 4){
@@ -58,20 +62,31 @@ void server::parser(QString line)
         if (ptr->currentChat == words[2])
             ptr->ui->ChatBrowser->append(nm.show());
     }
-    else if (words[0] == "invitelist" and words.size() >= 5){
-        ptr->invites.clear();
+    else if (words[0] == "invitelist"){
         ptr->ui->NotifList->clear();
-        for (int i = 1; i < words.size(); i += 4)
-            ptr->invites.insert(words[i], invite(words[i], words[i+1], words[i+2], words[i+3]));
-        for (invite i : ptr->invites){
-            ptr->ui->NotifList->addItem(i.toString());
-            ptr->ui->NotifList->item(ptr->ui->NotifList->count() - 1)->setToolTip(i.getID());
+        ptr->invites.clear();
+        if (words.size() >= 5){
+            for (int i = 1; i < words.size(); i += 4)
+                ptr->invites.insert(words[i], invite(words[i], words[i+1], words[i+2], words[i+3]));
+            for (invite i : ptr->invites){
+                ptr->ui->NotifList->addItem(i.toString());
+                ptr->ui->NotifList->item(ptr->ui->NotifList->count() - 1)->setToolTip(i.getID());
+            }
         }
     }
     else if (words[0] == "invite" and words.size() >= 5){
         invite ni = invite(words[1], words[2], words[3], words[4]);
         ptr->ui->NotifList->addItem(ni.toString());
         ptr->ui->NotifList->item(ptr->ui->NotifList->count() - 1)->setToolTip(words[1]);
+    }
+    else if (words[0] == "profile" and words.size() >= 4){
+        QString pwd;
+        if (ptr->currentClient.getPass().size() > 0)
+            pwd = ptr->currentClient.getPass();
+        else
+            pwd = ptr->ui->PassLine->text();
+        ptr->currentClient = client(words[1], words[2], pwd, words[3]);
+        ptr->displayClientInfo(ptr->currentClient);
     }
 
 }
@@ -101,6 +116,13 @@ destroyer server::destro;
 
 
 
+void MainWindow::sendToServer(QString msg)
+{
+    QByteArray m = msg.toUtf8();
+    qDebug() << "[OUT]  " << m;
+    server::getInstance()->socket->write(m,  m.length());
+    server::getInstance()->socket->flush();
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -218,7 +240,8 @@ void MainWindow::on_SignButton_clicked()
     if (mode)
         if (pass == pass2){
             msg = "reg|" + login + "|" + pass + "|" + email;
-            server::getInstance()->socket->write(msg.toUtf8());
+            //server::getInstance()->socket->write(msg.toUtf8());
+            sendToServer(msg);
         }
         else{
             qDebug() << "pass 1 != pass 2!";
@@ -226,7 +249,8 @@ void MainWindow::on_SignButton_clicked()
         }
     else if (login != "" && pass != ""){
            msg = "login|" + login + "|" + pass;
-           server::getInstance()->socket->write(msg.toUtf8());
+           //server::getInstance()->socket->write(msg.toUtf8());
+           sendToServer(msg);
 //           if(ui->checkBox->isChecked()){
 //               writeData(1);
 //           }
@@ -240,18 +264,33 @@ void MainWindow::on_SignButton_clicked()
 
 void MainWindow::on_ChangePassBtn_clicked()
 {
+    if (passChange){
+        if (ui->NewPassLine->text() == ui->NewPassLine_2->text() and
+            currentClient.getPass() == ui->oldPassLine->text()){
+            client newData = client(currentClient.getLogin(), currentClient.getEmail(), ui->NewPassLine->text() ,currentClient.getNick());
+            changeCurUserInfo(newData);
+        }
+    }
     changePassMode();
 }
 
 
 void MainWindow::on_ChangeEmailBtn_clicked()
 {
+    if (emailChange){
+        client newData = client(currentClient.getLogin(), ui->NewEmailLine->text(), currentClient.getPass(), currentClient.getNick());
+        changeCurUserInfo(newData);
+    }
     changeEmailMode();
 }
 
 
 void MainWindow::on_changeLoginBtn_clicked()
 {
+    if (loginChange){
+        client newData = client(ui->NewLogin->text(), currentClient.getEmail(), currentClient.getPass(), currentClient.getNick());
+        changeCurUserInfo(newData);
+    }
     changeLoginMode();
 }
 
@@ -266,12 +305,19 @@ void MainWindow::on_checkBox_2_stateChanged(int arg1)
 
 void MainWindow::on_logoutBtn_clicked()
 {
-    server::getInstance()->socket->write("logout");
+    //server::getInstance()->socket->write("logout");
+    sendToServer("logout");
     setLoginTabEnable(true);
     changeAccountStatus(false);
     ui->listWidget->clear();
     ui->NotifList->clear();
     ui->ChatBrowser->clear();
+    ui->NewLogin->clear();
+    ui->NewEmailLine->clear();
+    ui->oldPassLine->clear();
+    ui->NewPassLine->clear();
+    ui->NewPassLine_2->clear();
+    ui->InvUserIDLine->clear();
 }
 
 
@@ -288,7 +334,8 @@ void MainWindow::on_listWidget_itemSelectionChanged()
     else{
         // запрос сообщений + вывод в chatBrowser
         QString msg = "message|get|" + currentChatInd;
-        server::getInstance()->socket->write(msg.toUtf8());
+        //server::getInstance()->socket->write(msg.toUtf8());
+        sendToServer(msg);
     }
 }
 
@@ -327,7 +374,8 @@ void MainWindow::createNewChat(){
 
     if (chatName != ""){
         QString msg = "chat|create|" + chatName + "|" + chatDesc;
-        server::getInstance()->socket->write(msg.toUtf8());
+        //server::getInstance()->socket->write(msg.toUtf8());
+        sendToServer(msg);
         changeChatMode();
      }
 }
@@ -341,6 +389,17 @@ void MainWindow::setLoginTabEnable(bool setTo)
     ui->SignButton->setEnabled(setTo);
     ui->changeModeButton->setEnabled(setTo);
     ui->checkBox->setEnabled(setTo);
+}
+
+void MainWindow::displayClientInfo(client toDisp)
+{
+    ui->AccountLoginLabel->setText(toDisp.getLogin());
+    ui->AccountEmalLabel->setText(toDisp.getEmail());
+}
+
+void MainWindow::changeCurUserInfo(client newClient)
+{
+    sendToServer("profile|update|" + newClient.toString());
 }
 
 void MainWindow::readData()
@@ -388,6 +447,11 @@ void MainWindow::writeData(int stat)
     }
 }
 
+void MainWindow::getProfileInfo()
+{
+    sendToServer("profile|get");
+}
+
 void MainWindow::on_pushButton_clicked()
 {
     if (invNewUserMode) changeInvUserMode();
@@ -410,7 +474,8 @@ void MainWindow::on_InviteUserBtn_clicked()
 void MainWindow::on_leaveChatBtn_clicked()
 {
     QString msg = "chat|leave|" + currentChat;
-    server::getInstance()->socket->write(msg.toUtf8());
+    //server::getInstance()->socket->write(msg.toUtf8());
+    sendToServer(msg);
 }
 
 void MainWindow::changeInvUserMode()
@@ -427,7 +492,8 @@ void MainWindow::on_InvUserBtn_clicked()
     if (ui->InvUserIDLine->text() != "" and currentChat != ""){
         QString msg = "invite|send|" + ui->InvUserIDLine->text() + "|" + currentChat;
         qDebug() << msg;
-        server::getInstance()->socket->write(msg.toUtf8());
+        //server::getInstance()->socket->write(msg.toUtf8());
+        sendToServer(msg);
         ui->InvUserIDLine->clear();
     }
     changeInvUserMode();
@@ -437,7 +503,8 @@ void MainWindow::on_InvUserBtn_clicked()
 void MainWindow::on_ChatLine_returnPressed()
 {
     QString msg = "message|send|" + currentChat + "|" + ui->ChatLine->text();
-    server::getInstance()->socket->write(msg.toUtf8());
+    //server::getInstance()->socket->write(msg.toUtf8());
+    sendToServer(msg);
     ui->ChatLine->clear();
 }
 
@@ -463,10 +530,14 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 {
     //qDebug() << index;
     if (index == 1){
-        server::getInstance()->socket->write("chat|get");
+        //server::getInstance()->socket->write("chat|get");
+        sendToServer("chat|get");
     }
     else if (index == 3){
-        server::getInstance()->socket->write("invite|get");
+        ui->NotifList->clear();
+        invites.clear();
+        //server::getInstance()->socket->write("invite|get");
+        sendToServer("invite|get");
     }
 }
 
@@ -475,7 +546,8 @@ void MainWindow::on_InviteAccept_clicked()
 {
     try{
         QString ans = invites[ui->NotifList->currentItem()->toolTip()].answer(true);
-        server::getInstance()->socket->write(ans.toUtf8());
+        //server::getInstance()->socket->write(ans.toUtf8());
+        sendToServer(ans);
     }
     catch (...){
         return;
@@ -487,7 +559,9 @@ void MainWindow::on_InviteDecline_clicked()
 {
     if (invites.contains(ui->NotifList->currentItem()->toolTip())) {
         QString ans = invites[ui->NotifList->currentItem()->toolTip()].answer(false);
-        server::getInstance()->socket->write(ans.toUtf8());
+        //server::getInstance()->socket->write(ans.toUtf8());
+        sendToServer(ans);
     }
     return;
 }
+
