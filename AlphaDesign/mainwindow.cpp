@@ -1,11 +1,142 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+server::server(QObject *parent) : QObject(parent)
+{
+    socket = new QTcpSocket(this);
+    qDebug() << "123";
+    socket->connectToHost("95.165.152.146", 34197);
+    connect(socket, &QTcpSocket::readyRead,
+            this, &server::readSocket);
+}
+
+void server::preParser(QString line)
+{
+    for (QString l : line.split("~"))
+        parser(l);
+}
+
+void server::parser(QString line)
+{
+    if (line.size() == 0) return;
+    qDebug() << "[IN] " << line;
+
+    std::vector<QString> words;
+    for (QString word : line.split("|")) words.push_back(word);
+    if (words.size() <= 0) return;
+
+    if (!connected and words[0] == "Connected"){
+        connected = true;
+        ptr->changeConnectStat(true);
+    }
+
+    if (!ptr->loginedUser)
+    {
+        if (words[0] == "OK"){
+            ptr->writeData(ptr->ui->checkBox->isChecked() ? 1 : 0);
+            ptr->getProfileInfo();
+            ptr->changeAccountStatus(true);
+        }
+        else if (words[0] == "BAD"){
+            ptr->changeAccountStatus(false);
+            ptr->setLoginTabEnable(true);
+        }
+    }
+    if (words[0] == "chatlist"){
+        ptr->ui->listWidget->clear();
+        ptr->chats.clear();
+        ptr->ui->ChatBrowser->clear();
+        if (words.size() >= 5){
+            for (int i = 1; i < words.size(); i += 4){
+                ptr->ui->listWidget->addItem(words[i+2]);
+                ptr->ui->listWidget->item(ptr->ui->listWidget->count() - 1)->setToolTip(words[i]);
+            }
+        }
+    }
+    else if (words[0] == "messagelist" and words.size() >= 4){
+
+        for (int i = 1; i < words.size(); i += 3){
+            ptr->chats[ptr->currentChat].addMessage(message(words[i], words[i+2], words[i+1]));
+        }
+        for (message msg : ptr->chats[ptr->currentChat].msgs){
+            //qDebug() << msg.show();
+            ptr->ui->ChatBrowser->append(msg.show());
+        }
+    }
+    else if (words[0] == "message" and words.size() >= 5 and ptr->chats.contains(words[2])){
+        message nm = message(words[1], words[3], words[4]);
+        ptr->chats[words[2]].addMessage(nm);
+        if (ptr->currentChat == words[2])
+            ptr->ui->ChatBrowser->append(nm.show());
+    }
+    else if (words[0] == "invitelist"){
+        ptr->ui->NotifList->clear();
+        ptr->invites.clear();
+        if (words.size() >= 5){
+            for (int i = 1; i < words.size(); i += 4)
+                ptr->invites.insert(words[i], invite(words[i], words[i+1], words[i+2], words[i+3]));
+            for (invite i : ptr->invites){
+                ptr->ui->NotifList->addItem(i.toString());
+                ptr->ui->NotifList->item(ptr->ui->NotifList->count() - 1)->setToolTip(i.getID());
+            }
+        }
+    }
+    else if (words[0] == "invite" and words.size() >= 5){
+        invite ni = invite(words[1], words[2], words[3], words[4]);
+        ptr->ui->NotifList->addItem(ni.toString());
+        ptr->ui->NotifList->item(ptr->ui->NotifList->count() - 1)->setToolTip(words[1]);
+    }
+    else if (words[0] == "profile" and words.size() >= 4){
+        QString pwd;
+        if (ptr->currentClient.getPass().size() > 0)
+            pwd = ptr->currentClient.getPass();
+        else
+            pwd = ptr->ui->PassLine->text();
+        ptr->currentClient = client(words[1], words[2], pwd, words[3]);
+        ptr->displayClientInfo(ptr->currentClient);
+    }
+
+}
+
+server *server::getInstance()
+{
+    if (!p_instance){
+        p_instance = new server();
+        destro.init(p_instance);
+    }
+    return p_instance;
+}
+
+void server::readSocket()
+{
+    QString msg = "";
+
+    while (socket->bytesAvailable() > 0){
+        msg.append(socket->readAll());
+    }
+
+    preParser(msg);
+}
+
+server* server::p_instance;
+destroyer server::destro;
+
+
+
+void MainWindow::sendToServer(QString msg)
+{
+    QByteArray m = msg.toUtf8();
+    qDebug() << "[OUT]  " << m;
+    server::getInstance()->socket->write(m,  m.length());
+    server::getInstance()->socket->flush();
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    server::getInstance()->ptr = this;
+
     ui->setupUi(this);
     changeMode();
     changePassMode();
@@ -13,14 +144,19 @@ MainWindow::MainWindow(QWidget *parent)
     changeLoginMode();
     changeChatMode();
     changeInvUserMode();
+    changeAccountStatus(false);
+    changeConnectStat(false);
+
+    homeDir = QDir::homePath() + "/Qlient";
 
     // потом удалить
-    ui->NotifList->addItem("Здесь будут приглашения в чаты. Но пока тут ничего нет...");
+    //ui->NotifList->addItem("Здесь будут приглашения в чаты. Но пока тут ничего нет...");
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    server::getInstance()->socket->close();
 }
 
 void MainWindow::changeMode()
@@ -33,12 +169,12 @@ void MainWindow::changeMode()
     ui->PassLine_2->setVisible(mode);
 
     if (mode){
-        ui->SignButton->setText("Sign Up");
-        ui->changeModeButton->setText("I already have an account");
+        ui->SignButton->setText("Зарегистрироваться");
+        ui->changeModeButton->setText("У меня уже есть аккаунт");
     }
     else{
-        ui->SignButton->setText("Sign In");
-        ui->changeModeButton->setText("I don't have an account");
+        ui->SignButton->setText("Войти");
+        ui->changeModeButton->setText("У меня ещё нет аккаунта");
     }
 }
 
@@ -72,48 +208,96 @@ void MainWindow::changeLoginMode()
     ui->AccountLoginLabel->setVisible(!loginChange);
 }
 
+void MainWindow::changeConnectStat(bool setTo)
+{
+    ui->Login->setVisible(setTo);
+    ui->Pass->setVisible(setTo);
+    ui->Pass_2->setVisible(setTo & mode);
+    ui->Email->setVisible(setTo & mode);
+    ui->LoginLine->setVisible(setTo);
+    ui->EmailLine->setVisible(setTo & mode);
+    ui->PassLine->setVisible(setTo);
+    ui->PassLine_2->setVisible(setTo & mode);
+    ui->SignButton->setVisible(setTo);
+    ui->changeModeButton->setVisible(setTo);
+    ui->checkBox->setVisible(setTo);
+
+    ui->ConStatLabel->setVisible(!setTo);
+
+    if (setTo)
+        this->readData();
+}
+
 
 void MainWindow::on_changeModeButton_clicked()
 {
     changeMode();
+
 }
 
-// пока пустышка
 void MainWindow::on_SignButton_clicked()
 {
-    qDebug() << "Типа проверяем данные об аккаунте";
-    if (!mode){
-        qDebug() << "User Authorization:";
-        qDebug() << "Login: " + ui->LoginLine->text();
-        qDebug() << "Password: " + ui->PassLine->text();
-    }
-    else{
-        qDebug() << "User Registration:";
-        qDebug() << "Login: " + ui->LoginLine->text();
-        qDebug() << "E-mail: " + ui->EmailLine->text();
-        qDebug() << "Password: " + ui->PassLine->text();
-        qDebug() << "Retyped password: " + ui->PassLine_2->text();
-    }
-    if (ui->checkBox->isChecked())
-        qDebug() << "We will never forget you!";
+    setLoginTabEnable(false);
+    QString login = ui->LoginLine->text();
+    QString pass = ui->PassLine->text();
+    QString pass2 = ui->PassLine_2->text();
+    QString email = ui->EmailLine->text();
+    QString msg;
+
+    if (mode)
+        if (pass == pass2){
+            msg = "reg|" + login + "|" + pass + "|" + email;
+            //server::getInstance()->socket->write(msg.toUtf8());
+            sendToServer(msg);
+        }
+        else{
+            qDebug() << "pass 1 != pass 2!";
+            setLoginTabEnable(true);
+        }
+    else if (login != "" && pass != ""){
+           msg = "login|" + login + "|" + pass;
+           //server::getInstance()->socket->write(msg.toUtf8());
+           sendToServer(msg);
+//           if(ui->checkBox->isChecked()){
+//               writeData(1);
+//           }
+//           else{
+//               writeData(0);
+//           }
+        }
+    else setLoginTabEnable(true);
 }
 
 
 void MainWindow::on_ChangePassBtn_clicked()
 {
+    if (passChange){
+        if (ui->NewPassLine->text() == ui->NewPassLine_2->text() and
+            currentClient.getPass() == ui->oldPassLine->text()){
+            client newData = client(currentClient.getLogin(), currentClient.getEmail(), ui->NewPassLine->text() ,currentClient.getNick());
+            changeCurUserInfo(newData);
+        }
+    }
     changePassMode();
-    ui->listWidget->addItem(QString::number(ui->listWidget->count() + 1));
 }
 
 
 void MainWindow::on_ChangeEmailBtn_clicked()
 {
+    if (emailChange){
+        client newData = client(currentClient.getLogin(), ui->NewEmailLine->text(), currentClient.getPass(), currentClient.getNick());
+        changeCurUserInfo(newData);
+    }
     changeEmailMode();
 }
 
 
 void MainWindow::on_changeLoginBtn_clicked()
 {
+    if (loginChange){
+        client newData = client(ui->NewLogin->text(), currentClient.getEmail(), currentClient.getPass(), currentClient.getNick());
+        changeCurUserInfo(newData);
+    }
     changeLoginMode();
 }
 
@@ -121,18 +305,45 @@ void MainWindow::on_changeLoginBtn_clicked()
 void MainWindow::on_checkBox_2_stateChanged(int arg1)
 {
     qDebug() << "Theme change";
+    /*
+     * Надо делать через QPallete
+    */
 }
-
 
 void MainWindow::on_logoutBtn_clicked()
 {
-    qDebug() << "logout";
+    //server::getInstance()->socket->write("logout");
+    sendToServer("logout");
+    setLoginTabEnable(true);
+    changeAccountStatus(false);
+    ui->listWidget->clear();
+    ui->NotifList->clear();
+    ui->ChatBrowser->clear();
+    ui->NewLogin->clear();
+    ui->NewEmailLine->clear();
+    ui->oldPassLine->clear();
+    ui->NewPassLine->clear();
+    ui->NewPassLine_2->clear();
+    ui->InvUserIDLine->clear();
 }
 
 
 void MainWindow::on_listWidget_itemSelectionChanged()
 {
-    qDebug() << ui->listWidget->currentIndex();
+    QString currentChatInd =  ui->listWidget->currentItem()->toolTip();
+    ui->ChatBrowser->clear();
+    this->currentChat = currentChatInd;
+    if (chats.count(currentChatInd)){
+        // выводим все сообщения в chatBrowser
+        for (int i = 0; i < chats[currentChatInd].msgs.size(); i++)
+            ui->ChatBrowser->append(chats[currentChatInd].msgs[i].show());
+    }
+    else{
+        // запрос сообщений + вывод в chatBrowser
+        QString msg = "message|get|" + currentChatInd;
+        //server::getInstance()->socket->write(msg.toUtf8());
+        sendToServer(msg);
+    }
 }
 
 void MainWindow::changeChatMode()
@@ -165,12 +376,92 @@ void MainWindow::changeChatMode()
 
 
 void MainWindow::createNewChat(){
-    changeChatMode();
-    qDebug() << "New chat created";
+    QString chatName = ui->NewChatNameLine->text();
+    QString chatDesc = ui->NewChatDesc->toPlainText();
+
+    if (chatName != ""){
+        QString msg = "chat|create|" + chatName + "|" + chatDesc;
+        //server::getInstance()->socket->write(msg.toUtf8());
+        sendToServer(msg);
+        changeChatMode();
+     }
+}
+
+void MainWindow::setLoginTabEnable(bool setTo)
+{
+    ui->LoginLine->setEnabled(setTo);
+    ui->EmailLine->setEnabled(setTo);
+    ui->PassLine->setEnabled(setTo);
+    ui->PassLine_2->setEnabled(setTo);
+    ui->SignButton->setEnabled(setTo);
+    ui->changeModeButton->setEnabled(setTo);
+    ui->checkBox->setEnabled(setTo);
+}
+
+void MainWindow::displayClientInfo(client toDisp)
+{
+    ui->AccountLoginLabel->setText(toDisp.getLogin());
+    ui->AccountEmalLabel->setText(toDisp.getEmail());
+}
+
+void MainWindow::changeCurUserInfo(client newClient)
+{
+    sendToServer("profile|update|" + newClient.toString());
+}
+
+void MainWindow::readData()
+{
+    qDebug() << "Reading data from file";
+    /*для корректной работы должна быть предварительно
+    создана папка Qlient в домашней папке пользователя*/
+    QFile file(homeDir + "/data.txt");
+    if (!file.open((QIODevice::ReadWrite | QIODevice::Text))){
+        file.close();
+    }
+    else{
+        std::vector<QString> lines;
+        QString in = file.readAll();
+        qDebug() << in;
+        for (QString line : in.split("\n")) lines.push_back(line);
+
+        if (lines.size() == 3){
+            if (lines[0] == "1"){
+                if (lines[1] != "" && lines[2] != "")
+                {
+                    ui->LoginLine->setText(lines[1]);
+                    ui->PassLine->setText(lines[2]);
+                    this->on_SignButton_clicked();
+                }
+            }
+        }
+        file.close();
+    }
+}
+
+void MainWindow::writeData(int stat)
+{
+    qDebug() << "Writting data to file";
+    QFile file(homeDir + "/data.txt");
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        file.close();
+    else{
+        file.Truncate;
+        QString dt = QString::number(stat) + "\n" + ui->LoginLine->text() + "\n" + ui->PassLine->text();
+        qDebug() << dt;
+        QTextStream out(&file);
+        out << dt;
+        file.close();
+    }
+}
+
+void MainWindow::getProfileInfo()
+{
+    sendToServer("profile|get");
 }
 
 void MainWindow::on_pushButton_clicked()
 {
+    if (invNewUserMode) changeInvUserMode();
     changeChatMode();
 }
 
@@ -189,7 +480,9 @@ void MainWindow::on_InviteUserBtn_clicked()
 
 void MainWindow::on_leaveChatBtn_clicked()
 {
-    ui->ChatBrowser->append("Вы вышли из этого чата");
+    QString msg = "chat|leave|" + currentChat;
+    //server::getInstance()->socket->write(msg.toUtf8());
+    sendToServer(msg);
 }
 
 void MainWindow::changeInvUserMode()
@@ -203,14 +496,79 @@ void MainWindow::changeInvUserMode()
 
 void MainWindow::on_InvUserBtn_clicked()
 {
-    ui->ChatBrowser->append("Вы добавили нового пользователя " + ui->InvUserIDLine->text());
+    if (ui->InvUserIDLine->text() != "" and currentChat != ""){
+        QString msg = "invite|send|" + ui->InvUserIDLine->text() + "|" + currentChat;
+        qDebug() << msg;
+        //server::getInstance()->socket->write(msg.toUtf8());
+        sendToServer(msg);
+        ui->InvUserIDLine->clear();
+    }
     changeInvUserMode();
 }
 
 
 void MainWindow::on_ChatLine_returnPressed()
 {
-    ui->ChatBrowser->append(ui->ChatLine->text());
+    QString msg = "message|send|" + currentChat + "|" + ui->ChatLine->text();
+    //server::getInstance()->socket->write(msg.toUtf8());
+    sendToServer(msg);
     ui->ChatLine->clear();
+}
+
+void MainWindow::changeAccountStatus(bool newStatus)
+{
+    loginedUser = newStatus;
+
+    for (int i = 1; i < 5; i++)
+        ui->tabWidget->setTabEnabled(i, newStatus);
+
+    if (newStatus){
+        ui->tabWidget->setCurrentIndex(1);
+        ui->tabWidget->setTabEnabled(0, false);
+    }
+    else{
+        ui->tabWidget->setCurrentIndex(0);
+        ui->tabWidget->setTabEnabled(0, true);
+    }
+}
+
+
+void MainWindow::on_tabWidget_currentChanged(int index)
+{
+    //qDebug() << index;
+    if (index == 1){
+        //server::getInstance()->socket->write("chat|get");
+        sendToServer("chat|get");
+    }
+    else if (index == 3){
+        ui->NotifList->clear();
+        invites.clear();
+        //server::getInstance()->socket->write("invite|get");
+        sendToServer("invite|get");
+    }
+}
+
+
+void MainWindow::on_InviteAccept_clicked()
+{
+    try{
+        QString ans = invites[ui->NotifList->currentItem()->toolTip()].answer(true);
+        //server::getInstance()->socket->write(ans.toUtf8());
+        sendToServer(ans);
+    }
+    catch (...){
+        return;
+    }
+}
+
+
+void MainWindow::on_InviteDecline_clicked()
+{
+    if (invites.contains(ui->NotifList->currentItem()->toolTip())) {
+        QString ans = invites[ui->NotifList->currentItem()->toolTip()].answer(false);
+        //server::getInstance()->socket->write(ans.toUtf8());
+        sendToServer(ans);
+    }
+    return;
 }
 

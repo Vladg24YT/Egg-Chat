@@ -1,58 +1,55 @@
-#include "server.h"
+﻿#include "server.h"
 #include <string>
 
-Server::Server(QObject *parent): QObject{parent}
-{
-    DBWorker::createDB();
+Server::Server(QObject* parent) : QObject{ parent }{
+	DBWorker::getInstance()->open();
+	TcpServer = new QTcpServer(this);
+	connect(TcpServer, &QTcpServer::newConnection, this, &Server::slotNewConnection);
 
-    TcpServer = new QTcpServer(this);
-    connect(TcpServer, &QTcpServer::newConnection, this, &Server::slotNewConnection);
-
-    if (!TcpServer->listen(QHostAddress::Any, 34197)) {
-        qDebug() << "server is not started";
-    }
-    else {
-        serverStatus = 1;
-        qDebug() << "server is started";
-    }
+	if (!TcpServer->listen(QHostAddress::Any, 34197)) {
+		qDebug() << "\033[31m[SERVER] Server is not started\033[0m";
+	}
+	else {
+		qDebug() << "\033[32m[SERVER] Server is started\033[0m";
+	}
 }
 void Server::slotNewConnection() {
-    if (serverStatus == 1) {
-        QTcpSocket * sok = TcpServer->nextPendingConnection();
-        qDebug() << sok->peerAddress() << sok->socketDescriptor();
-        Client *client = new Client(this, sok);
-        // подключение сигналов для отправки сообщения и закрытия соединения клиента к слотам сервера
-        connect(client, &Client::Message, this, &Server::slotMessage);
-        connect(client, &Client::Close, this, &Server::slotRemove);
-        QString clID = QString::number(sok->socketDescriptor());
-        QString message = "Welcome to the server! Your ID = " + clID;
-        Clients.insert(sok->socketDescriptor(), client);
-        client->Socket->write(message.toUtf8());
-    }
+	QTcpSocket* sok = TcpServer->nextPendingConnection();
+	Client* client = new Client(sok);
+	Clients.insert(client->GetDescriptor(), client);
+	connect(client, &Client::Message, this, &Server::slotMessage);
+	connect(client, &Client::Kick, this, &Server::slotKick);
+	connect(client, &Client::Close, this, &Server::slotRemove);
+	QString message = "Connected|ID|" + QString::number(client->GetDescriptor());
+	client->Send(message);
+	qDebug() << "[SERVER] Client " << sok->peerAddress() << client->GetDescriptor() << "connected";
 }
-
-void Server::slotMessage(QString chatID, QString text){
-    qDebug() << "Start broadcast";
-    foreach(Client * clnt, Clients){
-        clnt->Socket->write(QByteArray(text.toUtf8()));
-    }
+void Server::slotMessage(QString sender, int chatID, QString text) {
+	QString response = "message|";
+	response += sender + "|" + QString::number(chatID) + "|" + text + "|" + QDateTime::currentDateTime().toString();
+	qDebug() << "[SERVER] Start broadcast: " << response;
+	foreach(Client * c, Clients) {
+		if (c->Chats.contains(chatID)) {
+			c->Send(response);
+		}
+	}
 }
-
-// удаление из списка отключившегося клиента
-void Server::slotRemove(Client * client){
-    //Clients.remove(Clients.indexOf(client));
-    Clients.remove(client->Socket->socketDescriptor());
-    client->Socket->close();
-    qDebug() << "Client disconnected";
+void Server::slotKick(int userID, QString command) {
+	foreach(Client * c, Clients) {
+		if (c->GetID() == userID) {
+			c->Send(command);
+			break;
+		}
+	}
 }
-// деструктор
+void Server::slotRemove(Client* client) {
+	Clients.remove(client->GetDescriptor());
+	client->Socket->close();
+	qDebug() << "\033[33m[SERVER] Client disconnected\033[0m";
+}
 Server::~Server() {
-    //foreach(Client * cleint, Clients){
-    //    cleint->Socket->close();
-    //}
-    foreach(Client * clnt, Clients){
-        clnt->Socket->close();
-    }
-    DBWorker::close();
-    serverStatus = 0;
+	foreach(Client * clnt, Clients) {
+		clnt->Socket->close();
+	}
+	DBWorker::getInstance()->close();
 }
