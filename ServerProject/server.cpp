@@ -1,77 +1,55 @@
-#include "server.h"
+﻿#include "server.h"
+#include <string>
 
-Server::Server(QObject *parent): QObject{parent}
-{
-    TcpServer = new QTcpServer(this);
-    connect(TcpServer, &QTcpServer::newConnection, this, &Server::slotNewConnection);
+Server::Server(QObject* parent) : QObject{ parent }{
+	DBWorker::getInstance()->open();
+	TcpServer = new QTcpServer(this);
+	connect(TcpServer, &QTcpServer::newConnection, this, &Server::slotNewConnection);
 
-    if (!TcpServer->listen(QHostAddress::Any, 34197)) {
-        qDebug() << "server is not started";
-    }
-    else {
-        serverStatus = 1;
-        qDebug() << "server is started";
-    }
+	if (!TcpServer->listen(QHostAddress::Any, 34197)) {
+		qDebug() << "\033[31m[SERVER] Server is not started\033[0m";
+	}
+	else {
+		qDebug() << "\033[32m[SERVER] Server is started\033[0m";
+	}
 }
 void Server::slotNewConnection() {
-    if (serverStatus == 1) {
-        TcpSocket = TcpServer->nextPendingConnection();
-        qDebug() << TcpSocket->peerAddress();
-        TcpSocket->write("Welcome to the echo server!\r\n");
-        connect(TcpSocket, &QTcpSocket::readyRead, this, &Server::slotRead);
-        connect(TcpSocket,&QTcpSocket::disconnected, this, &Server::slotCloseClientConnection);
-    }
+	QTcpSocket* sok = TcpServer->nextPendingConnection();
+	Client* client = new Client(sok);
+	Clients.insert(client->GetDescriptor(), client);
+	connect(client, &Client::Message, this, &Server::slotMessage);
+	connect(client, &Client::Kick, this, &Server::slotKick);
+	connect(client, &Client::Close, this, &Server::slotRemove);
+	QString message = "Connected|ID|" + QString::number(client->GetDescriptor());
+	client->Send(message);
+	qDebug() << "[SERVER] Client " << sok->peerAddress() << client->GetDescriptor() << "connected";
 }
-
-void Server::slotRead() {
-    while(TcpSocket->bytesAvailable()>0)
-    {
-        QByteArray array = TcpSocket->readAll();
-        qDebug() << array;
-
-        std::vector<std::string> words;
-        std::string tmp = "";
-
-        for (int i = 0; i < array.size(); i++) {
-            if (array[i] == ' ') {
-                words.push_back(tmp);
-                tmp = "";
-            }
-            else
-                tmp += array[i];
-        }
-        if (tmp != "")
-            words.push_back(tmp);
-
-        if (words[0] == "/reg")
-            if (words.size() != 3)
-                TcpSocket->write("Wrong input data!\n");
-            else
-                TcpSocket->write("Registration user ");
-        else if (words[0] == "/login")
-            if (words.size() != 4)
-                TcpSocket->write("Wrong input data!\n");
-            else if (words[1] == "a")
-                TcpSocket->write("Authorization admin with \n");
-            else if (words[1] == "u")
-                TcpSocket->write("Authorization user with \n");
-            else TcpSocket->write("Not such login option!\n");
-        else if (words[0] == "/message"){
-            if (words.size() < 2)
-                TcpSocket->write("No message!\n");
-            else {
-                TcpSocket->write("Message!\n");
-            }
-        };
-
-        TcpSocket->write(array);
-    }
+void Server::slotMessage(QString sender, int chatID, QString text) {
+	QString response = "message|";
+	response += sender + "|" + QString::number(chatID) + "|" + text + "|" + QDateTime::currentDateTime().toString();
+	qDebug() << "[SERVER] Start broadcast: " << response;
+	foreach(Client * c, Clients) {
+		if (c->Chats.contains(chatID)) {
+			c->Send(response);
+		}
+	}
 }
-void Server::slotCloseClientConnection() {
-    TcpSocket->close();
+void Server::slotKick(int userID, QString command) {
+	foreach(Client * c, Clients) {
+		if (c->GetID() == userID) {
+			c->Send(command);
+			break;
+		}
+	}
 }
-
+void Server::slotRemove(Client* client) {
+	Clients.remove(client->GetDescriptor());
+	client->Socket->close();
+	qDebug() << "\033[33m[SERVER] Client disconnected\033[0m";
+}
 Server::~Server() {
-    TcpSocket->close();
-    serverStatus = 1;
+	foreach(Client * clnt, Clients) {
+		clnt->Socket->close();
+	}
+	DBWorker::getInstance()->close();
 }
